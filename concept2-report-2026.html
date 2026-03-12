@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept2 訓練報告 · Season 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6b;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --ski: #00e5ff;
+    --row: #ff6b35;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background noise texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: -10px;
+    right: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 15vw, 180px);
+    color: rgba(255,255,255,0.025);
+    letter-spacing: 0.05em;
+    user-select: none;
+    line-height: 1;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+  }
+
+  .hero-title span {
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── KPI ROW ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .kpi-card:hover { border-color: rgba(0,229,255,0.3); }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .kpi-card.orange::before { background: linear-gradient(90deg, var(--accent2), transparent); }
+  .kpi-card.green::before { background: linear-gradient(90deg, var(--accent3), transparent); }
+
+  .kpi-icon {
+    font-size: 18px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+
+  .kpi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .kpi-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── CHARTS ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 700px) { .chart-grid { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .chart-card.wide {
+    grid-column: 1 / -1;
+  }
+
+  .chart-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 220px;
+  }
+
+  .chart-wrap.tall {
+    height: 280px;
+  }
+
+  /* ── WORKOUT TABLE ── */
+  .workout-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .workout-table thead th {
+    text-align: left;
+    padding: 10px 12px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .workout-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  .workout-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+  .workout-table tbody td {
+    padding: 10px 12px;
+    vertical-align: middle;
+  }
+
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .type-ski {
+    background: rgba(0,229,255,0.12);
+    color: var(--ski);
+    border: 1px solid rgba(0,229,255,0.25);
+  }
+
+  .type-row {
+    background: rgba(255,107,53,0.12);
+    color: var(--row);
+    border: 1px solid rgba(255,107,53,0.25);
+  }
+
+  .pace-val {
+    color: var(--accent3);
+    font-weight: 500;
+  }
+
+  .watts-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .watts-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    max-width: 70px;
+  }
+
+  .watts-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+
+  /* ── PROGRESS BAR STAT ── */
+  .progress-stat {
+    margin-bottom: 14px;
+  }
+
+  .progress-stat-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .progress-stat-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  .progress-stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  .progress-bar {
+    height: 5px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { animation: fadeUp 0.6s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero fade-up">
+    <div class="hero-bg-text">SKI</div>
+    <div class="hero-label">⬤ Concept2 · 訓練數據報告</div>
+    <h1 class="hero-title">SEASON<br><span>2026</span></h1>
+    <div class="hero-subtitle">// 2025.11.14 — 2026.03.02 &nbsp;·&nbsp; 16 次訓練記錄</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-value">67,345</span>
+        <span class="hero-stat-label">公尺 總距離</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">16</span>
+        <span class="hero-stat-label">訓練次數</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">~5.5h</span>
+        <span class="hero-stat-label">總訓練時間</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">15 / 1</span>
+        <span class="hero-stat-label">SkiErg / RowErg</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row fade-up delay-1">
+    <div class="kpi-card">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-value">453</div>
+      <div class="kpi-label">峰值瓦數 (W)</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-icon">🏃</div>
+      <div class="kpi-value">1:32</div>
+      <div class="kpi-label">最佳 500m 配速</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-icon">❤️</div>
+      <div class="kpi-value">159</div>
+      <div class="kpi-label">最高平均心率</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">🎿</div>
+      <div class="kpi-value">10k</div>
+      <div class="kpi-label">最長單次距離</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-icon">📅</div>
+      <div class="kpi-value">45:47</div>
+      <div class="kpi-label">最長持續時間</div>
+    </div>
+  </div>
+
+  <!-- SECTION: CHARTS -->
+  <div class="section fade-up delay-2">
+    <div class="section-title">訓練趨勢分析</div>
+
+    <div class="chart-grid">
+      <!-- Distance Over Time -->
+      <div class="chart-card wide">
+        <div class="chart-title">各訓練日距離 (公尺)</div>
+        <div class="chart-wrap tall">
+          <canvas id="distanceChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Watts chart -->
+      <div class="chart-card">
+        <div class="chart-title">平均瓦數趨勢</div>
+        <div class="chart-wrap">
+          <canvas id="wattsChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Pace chart -->
+      <div class="chart-card">
+        <div class="chart-title">500m 配速趨勢（秒）</div>
+        <div class="chart-wrap">
+          <canvas id="paceChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Monthly volume -->
+      <div class="chart-card">
+        <div class="chart-title">每月訓練量 (公尺)</div>
+        <div class="chart-wrap">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Workout type donut -->
+      <div class="chart-card">
+        <div class="chart-title">訓練器材佔比</div>
+        <div class="chart-wrap">
+          <canvas id="typeChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: TOP PERFORMANCES -->
+  <div class="section fade-up delay-3">
+    <div class="section-title">最佳表現</div>
+    <div class="chart-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div>
+          <div class="chart-title" style="margin-bottom:20px">瓦數輸出 (最高 = 453W)</div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">200m SkiErg</span><span class="progress-stat-val">453W</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:100%;background:linear-gradient(90deg,#ff6b35,#00e5ff)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">v0:20/0:10r...24</span><span class="progress-stat-val">236W</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:52%;background:linear-gradient(90deg,#ff6b35,#00e5ff)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">v1:00/1:00r...7 (3月)</span><span class="progress-stat-val">220W</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:48.6%;background:linear-gradient(90deg,#ff6b35,#00e5ff)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">1x500m/1:00r</span><span class="progress-stat-val">214W</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:47.2%;background:linear-gradient(90deg,#ff6b35,#00e5ff)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">v250m/0:45r...12</span><span class="progress-stat-val">225W</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:49.7%;background:linear-gradient(90deg,#ff6b35,#00e5ff)"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="chart-title" style="margin-bottom:20px">心率記錄 (最高 = 159 bpm)</div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">v8:00/3:00r...4 (11月)</span><span class="progress-stat-val">159 bpm</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:100%;background:linear-gradient(90deg,#7fff6b,#ff6b35)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">v1:00/1:00r...7 (11月)</span><span class="progress-stat-val">155 bpm</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:97.5%;background:linear-gradient(90deg,#7fff6b,#ff6b35)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">10000m row</span><span class="progress-stat-val">154 bpm</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:96.8%;background:linear-gradient(90deg,#7fff6b,#ff6b35)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">v250m/0:45r...12</span><span class="progress-stat-val">154 bpm</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:96.8%;background:linear-gradient(90deg,#7fff6b,#ff6b35)"></div></div>
+          </div>
+          <div class="progress-stat">
+            <div class="progress-stat-header"><span class="progress-stat-name">12x500m/1:00r</span><span class="progress-stat-val">152 bpm</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:95.6%;background:linear-gradient(90deg,#7fff6b,#ff6b35)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: WORKOUT LOG -->
+  <div class="section fade-up delay-4">
+    <div class="section-title">完整訓練紀錄</div>
+    <div class="chart-card" style="overflow-x:auto">
+      <table class="workout-table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>器材</th>
+            <th>描述</th>
+            <th>距離 (m)</th>
+            <th>時間</th>
+            <th>配速 /500m</th>
+            <th>瓦數</th>
+            <th>心率</th>
+          </tr>
+        </thead>
+        <tbody id="workoutLog"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION: INSIGHTS -->
+  <div class="section fade-up delay-5">
+    <div class="section-title">數據洞察</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+      <div class="chart-card">
+        <div style="font-size:22px;margin-bottom:10px">🎿</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">以 SkiErg 為主</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6">本賽季 16 次訓練中 15 次使用 SkiErg，佔比 93.75%。僅 1 次 10000m RowErg，顯示以上肢有氧訓練為核心。</div>
+      </div>
+      <div class="chart-card">
+        <div style="font-size:22px;margin-bottom:10px">📈</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px">強度呈現分層</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6">最高瓦數 453W（200m 衝刺）vs 穩態 120–137W，訓練多樣化，兼顧無氧爆發與有氧基礎。</div>
+      </div>
+      <div class="chart-card">
+        <div style="font-size:22px;margin-bottom:10px">🗓️</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent3);margin-bottom:8px">12月最高訓練量</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6">12月共 6 次訓練，總距離最高，含兩次 10000m 長距離。進入 2026 年後頻率降低，改以高強度間歇為主。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Concept2 Online Logbook · Season 2026</span>
+    <span>Generated · 2026.03.12</span>
+  </div>
+
+</div>
+
+<script>
+const workouts = [
+  { date: '2026-03-02', type: 'SkiErg', desc: 'v1:00/1:00r...7', dist: 2571, time: '10:00', pace: '1:56.6', watts: 220, hr: null },
+  { date: '2026-02-06', type: 'SkiErg', desc: 'v500m/2:00r...5', dist: 2500, time: '10:43', pace: '2:08.7', watts: 164, hr: null },
+  { date: '2026-01-08', type: 'SkiErg', desc: 'v0:20/0:10r...24', dist: 2106, time: '8:00', pace: '1:53.9', watts: 236, hr: 142 },
+  { date: '2025-12-29', type: 'SkiErg', desc: '1:03 SkiErg', dist: 177, time: '1:03', pace: '2:59.3', watts: 61, hr: null },
+  { date: '2025-12-21', type: 'SkiErg', desc: '10000m SkiErg', dist: 10000, time: '45:47', pace: '2:17.3', watts: 135, hr: null },
+  { date: '2025-12-18', type: 'RowErg', desc: '10000m row', dist: 10000, time: '45:32', pace: '2:16.6', watts: 137, hr: 154 },
+  { date: '2025-12-16', type: 'SkiErg', desc: 'v250m/0:45r...12', dist: 3000, time: '11:35', pace: '1:55.9', watts: 225, hr: 154 },
+  { date: '2025-12-12', type: 'SkiErg', desc: '200m SkiErg', dist: 200, time: '0:36', pace: '1:31.7', watts: 453, hr: 146 },
+  { date: '2025-12-12', type: 'SkiErg', desc: 'v1500m/2:00r...4', dist: 6000, time: '27:22', pace: '2:16.8', watts: 137, hr: 145 },
+  { date: '2025-12-11', type: 'SkiErg', desc: 'v4:00/2:00r...7', dist: 4452, time: '19:00', pace: '2:08.0', watts: 167, hr: null },
+  { date: '2025-11-22', type: 'SkiErg', desc: '12x500m/1:00r', dist: 6000, time: '26:19', pace: '2:11.6', watts: 153, hr: 152 },
+  { date: '2025-11-19', type: 'SkiErg', desc: '40:00 SkiErg', dist: 8398, time: '40:00', pace: '2:22.8', watts: 120, hr: 150 },
+  { date: '2025-11-18', type: 'SkiErg', desc: '1x500m/1:00r', dist: 500, time: '1:57', pace: '1:57.9', watts: 214, hr: null },
+  { date: '2025-11-18', type: 'SkiErg', desc: 'v750m/2:00r...5', dist: 3750, time: '16:35', pace: '2:12.6', watts: 150, hr: null },
+  { date: '2025-11-17', type: 'SkiErg', desc: 'v1:00/1:00r...7', dist: 3856, time: '16:00', pace: '2:04.4', watts: 181, hr: 155 },
+  { date: '2025-11-14', type: 'SkiErg', desc: 'v8:00/3:00r...4', dist: 4485, time: '20:00', pace: '2:13.7', watts: 146, hr: 159 },
+];
+
+// Populate table
+const tbody = document.getElementById('workoutLog');
+workouts.forEach(w => {
+  const paceSeconds = w.pace.includes(':') ? parseInt(w.pace.split(':')[0])*60 + parseFloat(w.pace.split(':')[1]) : 0;
+  const paceMinutes = Math.floor(paceSeconds / 60);
+  const paceSecs = Math.round(paceSeconds % 60).toString().padStart(2,'0');
+
+  tbody.innerHTML += `
+    <tr>
+      <td>${w.date.slice(5)}</td>
+      <td><span class="type-badge type-${w.type === 'SkiErg' ? 'ski' : 'row'}">${w.type === 'SkiErg' ? '🎿' : '🚣'} ${w.type}</span></td>
+      <td style="color:var(--muted)">${w.desc}</td>
+      <td style="color:var(--text);font-weight:500">${w.dist.toLocaleString()}</td>
+      <td style="color:var(--muted)">${w.time}</td>
+      <td class="pace-val">${paceMinutes}:${paceSecs}</td>
+      <td>
+        <div class="watts-bar-wrap">
+          <span style="min-width:34px">${w.watts}W</span>
+          <div class="watts-bar"><div class="watts-bar-fill" style="width:${(w.watts/453*100).toFixed(0)}%"></div></div>
+        </div>
+      </td>
+      <td style="color:${w.hr ? (w.hr >= 155 ? 'var(--accent2)' : 'var(--muted)') : 'var(--border)'}">${w.hr ? w.hr + ' bpm' : '—'}</td>
+    </tr>`;
+});
+
+// Chart defaults
+Chart.defaults.color = '#6b7280';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = "'DM Mono', monospace";
+
+const labels = [...workouts].reverse().map(w => w.date.slice(5));
+const distances = [...workouts].reverse().map(w => w.dist);
+const wattsData = [...workouts].reverse().map(w => w.watts);
+const paceData = [...workouts].reverse().map(w => {
+  const parts = w.pace.split(':');
+  return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+});
+
+// Distance chart
+new Chart(document.getElementById('distanceChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: 'm',
+      data: distances,
+      backgroundColor: distances.map((d, i) => [...workouts].reverse()[i].type === 'RowErg' ? 'rgba(255,107,53,0.7)' : 'rgba(0,229,255,0.5)'),
+      borderColor: distances.map((d, i) => [...workouts].reverse()[i].type === 'RowErg' ? '#ff6b35' : '#00e5ff'),
+      borderWidth: 1,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw.toLocaleString()} m` } } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxRotation: 45, font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v } }
+    }
+  }
+});
+
+// Watts chart
+new Chart(document.getElementById('wattsChart'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Watts',
+      data: wattsData,
+      borderColor: '#ff6b35',
+      backgroundColor: 'rgba(255,107,53,0.1)',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#ff6b35',
+      pointRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxRotation: 45, font: { size: 9 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => `${v}W` } }
+    }
+  }
+});
+
+// Pace chart (lower = better)
+new Chart(document.getElementById('paceChart'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Pace',
+      data: paceData,
+      borderColor: '#7fff6b',
+      backgroundColor: 'rgba(127,255,107,0.08)',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#7fff6b',
+      pointRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: {
+      label: c => {
+        const m = Math.floor(c.raw/60);
+        const s = Math.round(c.raw%60).toString().padStart(2,'0');
+        return ` ${m}:${s} /500m`;
+      }
+    }}},
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxRotation: 45, font: { size: 9 } } },
+      y: {
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        reverse: true,
+        ticks: { callback: v => { const m = Math.floor(v/60); const s = Math.round(v%60).toString().padStart(2,'0'); return `${m}:${s}`; } }
+      }
+    }
+  }
+});
+
+// Monthly chart
+const monthly = { '2025-11': 0, '2025-12': 0, '2026-01': 0, '2026-02': 0, '2026-03': 0 };
+workouts.forEach(w => {
+  const key = w.date.slice(0,7);
+  if (monthly[key] !== undefined) monthly[key] += w.dist;
+});
+const monthLabels = { '2025-11': '11月', '2025-12': '12月', '2026-01': '1月', '2026-02': '2月', '2026-03': '3月' };
+
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: Object.keys(monthly).map(k => monthLabels[k]),
+    datasets: [{
+      data: Object.values(monthly),
+      backgroundColor: ['rgba(0,229,255,0.3)','rgba(0,229,255,0.6)','rgba(0,229,255,0.4)','rgba(0,229,255,0.3)','rgba(0,229,255,0.5)'],
+      borderColor: '#00e5ff',
+      borderWidth: 1,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw.toLocaleString()} m` } } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => `${(v/1000).toFixed(0)}k` } }
+    }
+  }
+});
+
+// Type donut
+new Chart(document.getElementById('typeChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['SkiErg', 'RowErg'],
+    datasets: [{
+      data: [15, 1],
+      backgroundColor: ['rgba(0,229,255,0.7)', 'rgba(255,107,53,0.7)'],
+      borderColor: ['#00e5ff', '#ff6b35'],
+      borderWidth: 2,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyle: 'circle', font: { size: 11 } } },
+      tooltip: { callbacks: { label: c => ` ${c.label}: ${c.raw} 次 (${(c.raw/16*100).toFixed(1)}%)` } }
+    }
+  }
+});
+</script>
+</body>
+</html>
