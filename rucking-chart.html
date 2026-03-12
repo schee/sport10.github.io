@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rucking 訓練日誌 — 負重進展</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+TC:wght@300;400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080b0f;
+    --surface: #0e1318;
+    --border: #1c2430;
+    --text: #d4dde8;
+    --muted: #4a5a6a;
+    --ruck: #4da6ff;
+    --hike: #39d353;
+    --run: #ff6b4a;
+    --walk: #b39ddb;
+    --accent: #4da6ff;
+    --avg-line: rgba(255,255,255,0.2);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+    padding: 40px 32px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Subtle grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(77,166,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77,166,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+
+  /* ── Header ── */
+  header { margin-bottom: 36px; }
+  .eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 8vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    background: linear-gradient(100deg, #4da6ff 0%, #39d353 55%, #ff6b4a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── Stats row ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 600px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .stat-card:nth-child(1) { animation-delay: 0.05s; }
+  .stat-card:nth-child(2) { animation-delay: 0.1s; }
+  .stat-card:nth-child(3) { animation-delay: 0.15s; }
+  .stat-card:nth-child(4) { animation-delay: 0.2s; }
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 1px;
+  }
+
+  /* ── Filter pills ── */
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .pill {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .pill:hover { border-color: var(--text); color: var(--text); }
+  .pill.active-all { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .pill.active-ruck { background: var(--ruck); color: var(--bg); border-color: var(--ruck); }
+  .pill.active-hike { background: var(--hike); color: var(--bg); border-color: var(--hike); }
+  .pill.active-run  { background: var(--run);  color: var(--bg); border-color: var(--run); }
+  .pill.active-walk { background: var(--walk); color: var(--bg); border-color: var(--walk); }
+
+  /* ── Chart panels ── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px 20px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease both;
+    overflow: hidden;
+  }
+  .panel:nth-child(1) { animation-delay: 0.25s; }
+  .panel:nth-child(2) { animation-delay: 0.35s; }
+  .panel:nth-child(3) { animation-delay: 0.45s; }
+  .panel-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .chart-wrap { width: 100%; overflow-x: auto; }
+
+  /* ── Bar Chart SVG ── */
+  .bar-chart { display: block; }
+  .bar-rect { cursor: pointer; transition: opacity 0.15s; }
+  .bar-rect:hover { opacity: 0.75; }
+  .axis-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    fill: var(--muted);
+  }
+  .grid-line { stroke: #1c2430; stroke-dasharray: 3 3; }
+  .avg-line-el { stroke: rgba(255,255,255,0.15); stroke-dasharray: 5 4; }
+
+  /* ── Tooltip ── */
+  #tooltip {
+    position: fixed;
+    background: #0e1318;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 100;
+    max-width: 260px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+    line-height: 1.7;
+  }
+  #tooltip.show { opacity: 1; }
+  .tt-type {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 1px 7px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    font-weight: 700;
+    color: #080b0f;
+  }
+  .tt-date { color: var(--muted); font-size: 10px; margin-bottom: 8px; }
+  .tt-row { display: flex; justify-content: space-between; gap: 16px; }
+  .tt-key { color: var(--muted); }
+  .tt-val { font-weight: 700; }
+  .tt-note { color: var(--muted); font-size: 10px; margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; line-height: 1.6; }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 32px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: #232d3a;
+    text-align: right;
+    letter-spacing: 2px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">訓練日誌分析 // Sport10</div>
+    <h1>負重進展總覽</h1>
+    <div class="subtitle">2025.02.16 — 2026.03.04 &nbsp;|&nbsp; 22 筆記錄</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">最高負重</div>
+      <div class="stat-value" style="color:#ff6b4a">57 kg</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">平均負重</div>
+      <div class="stat-value" style="color:#4da6ff">18.5 kg</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">總累積距離</div>
+      <div class="stat-value" style="color:#39d353">101 km</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">訓練次數</div>
+      <div class="stat-value" style="color:#b39ddb">22 次</div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="pill active-all" onclick="filter('all', this)">全部 (22)</button>
+    <button class="pill" style="color:#4da6ff;border-color:#4da6ff22" onclick="filter('Rucking', this)">Rucking (12)</button>
+    <button class="pill" style="color:#39d353;border-color:#39d35322" onclick="filter('Hiking', this)">Hiking (5)</button>
+    <button class="pill" style="color:#ff6b4a;border-color:#ff6b4a22" onclick="filter('Running', this)">Running (4)</button>
+    <button class="pill" style="color:#b39ddb;border-color:#b39ddb22" onclick="filter('Walking', this)">Walking (1)</button>
+  </div>
+
+  <!-- Chart 1: Weight -->
+  <div class="panel">
+    <div class="panel-title">各次訓練負重 (KG)</div>
+    <div class="chart-wrap">
+      <svg id="chart-weight" class="bar-chart" height="260"></svg>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4da6ff"></div>Rucking</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#39d353"></div>Hiking</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff6b4a"></div>Running</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#b39ddb"></div>Walking</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,0.15);border:1px dashed rgba(255,255,255,0.3)"></div>平均線</div>
+    </div>
+  </div>
+
+  <!-- Chart 2: Distance -->
+  <div class="panel">
+    <div class="panel-title">各次訓練距離 (KM)</div>
+    <div class="chart-wrap">
+      <svg id="chart-dist" class="bar-chart" height="220"></svg>
+    </div>
+  </div>
+
+  <!-- Chart 3: Weight vs Pace line -->
+  <div class="panel">
+    <div class="panel-title">負重 (KG) vs 均速 (MIN/KM) — 排除離群值</div>
+    <div class="chart-wrap">
+      <svg id="chart-pace" class="bar-chart" height="240"></svg>
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#4a5a6a;margin-top:10px;letter-spacing:1px;">
+      ＊ 橘線為均速；烘爐地 3/04（37.1 min/km 純爬階梯）已排除以確保圖表可讀性
+    </div>
+  </div>
+
+  <footer>RUCKING TRAINING LOG &nbsp;// &nbsp;DATA VIA SPORT10</footer>
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+const ALL_DATA = [
+  { date:"2025-02-16", short:"2/16", type:"Rucking",  weight:23, distance:3.20,  pace:7.30,  note:"河濱/便宜背包/訓練鞋" },
+  { date:"2025-07-06", short:"7/06", type:"Rucking",  weight:16, distance:10.00, pace:7.42,  note:"河濱/便宜背包/中筒越野跑鞋" },
+  { date:"2025-07-09", short:"7/09", type:"Running",  weight:4,  distance:6.25,  pace:5.55,  note:"河濱/跑跑停停/戰術背心/碳版跑鞋" },
+  { date:"2025-07-13", short:"7/13", type:"Walking",  weight:6,  distance:13.15, pace:8.26,  note:"市區/河濱/休閒服/休閒背包/訓練鞋" },
+  { date:"2025-07-16", short:"7/16", type:"Rucking",  weight:29, distance:8.34,  pace:10.40, note:"河濱/老舊登山背包/便宜短桶靴" },
+  { date:"2025-07-19", short:"7/19", type:"Running",  weight:6,  distance:4.96,  pace:6.33,  note:"河濱/戰術背心/碳板跑鞋" },
+  { date:"2025-07-21", short:"7/21", type:"Running",  weight:2,  distance:4.07,  pace:5.50,  note:"河濱/戰術背心/碳板跑鞋" },
+  { date:"2025-07-22", short:"7/22a",type:"Hiking",   weight:16, distance:1.60,  pace:13.21, note:"山路/戰術背包/便宜短筒靴（118m爬升）" },
+  { date:"2025-07-22", short:"7/22b",type:"Hiking",   weight:16, distance:1.20,  pace:20.40, note:"山路/戰術背包/便宜短筒靴（168m爬升）" },
+  { date:"2025-07-24", short:"7/24", type:"Rucking",  weight:16, distance:7.53,  pace:9.33,  note:"大雨/河濱/戰術背包/便宜短筒靴" },
+  { date:"2025-07-25", short:"7/25", type:"Running",  weight:2,  distance:3.62,  pace:5.35,  note:"大雨/河濱/戰術背心/爛跑鞋" },
+  { date:"2025-07-27", short:"7/27", type:"Hiking",   weight:2,  distance:4.32,  pace:11.37, note:"山路/戰術背心/越野跑鞋（243m爬升）" },
+  { date:"2025-07-29", short:"7/29", type:"Hiking",   weight:4,  distance:1.90,  pace:15.05, note:"山徑/戰術背心（195m爬升）" },
+  { date:"2025-07-30", short:"7/30", type:"Hiking",   weight:4,  distance:3.57,  pace:13.43, note:"山徑/戰術背心（237m爬升）" },
+  { date:"2025-07-31", short:"7/31", type:"Rucking",  weight:21, distance:8.65,  pace:11.35, note:"山路/戰術背心/戰術背包/氣溫35" },
+  { date:"2025-12-28", short:"12/28",type:"Rucking",  weight:57, distance:3.14,  pace:10.53, note:"河濱/陰雨/電腦包/長褲/短筒靴" },
+  { date:"2026-02-14", short:"2/14", type:"Rucking",  weight:20, distance:3.14,  pace:9.51,  note:"河濱/跑鞋/晴/單手提10kg×2" },
+  { date:"2026-02-15", short:"2/15", type:"Rucking",  weight:32, distance:3.14,  pace:9.54,  note:"河濱/跑鞋/背20/手提8+4kg" },
+  { date:"2026-02-16", short:"2/16b",type:"Rucking",  weight:22, distance:3.03,  pace:10.40, note:"河濱/跑鞋/鐵棍掛10+10kg（扁擔）" },
+  { date:"2026-02-17", short:"2/17", type:"Rucking",  weight:38, distance:3.00,  pace:9.45,  note:"河濱/單爛包/便鞋" },
+  { date:"2026-02-24", short:"2/24", type:"Rucking",  weight:5,  distance:3.00,  pace:6.07,  note:"河濱/戰術背心/爛跑鞋/超快走" },
+  { date:"2026-03-04", short:"3/04", type:"Rucking",  weight:50, distance:0.25,  pace:37.13, note:"烘爐地階梯/下雨/前21後29kg" },
+];
+
+const TYPE_COLOR = { Rucking:"#4da6ff", Hiking:"#39d353", Running:"#ff6b4a", Walking:"#b39ddb" };
+
+let activeFilter = 'all';
+let currentData = [...ALL_DATA];
+
+const tt = document.getElementById('tooltip');
+
+function showTip(e, d) {
+  const c = TYPE_COLOR[d.type];
+  tt.innerHTML = `
+    <span class="tt-type" style="background:${c}">${d.type.toUpperCase()}</span>
+    <div class="tt-date">${d.date} &nbsp;${d.short}</div>
+    <div class="tt-row"><span class="tt-key">負重</span><span class="tt-val" style="color:${c}">${d.weight} kg</span></div>
+    <div class="tt-row"><span class="tt-key">距離</span><span class="tt-val">${d.distance} km</span></div>
+    <div class="tt-row"><span class="tt-key">均速</span><span class="tt-val">${d.pace} min/km</span></div>
+    <div class="tt-note">${d.note}</div>
+  `;
+  tt.classList.add('show');
+  moveTip(e);
+}
+
+function moveTip(e) {
+  const x = e.clientX + 14, y = e.clientY - 10;
+  tt.style.left = Math.min(x, window.innerWidth - 280) + 'px';
+  tt.style.top  = Math.max(y - tt.offsetHeight / 2, 8) + 'px';
+}
+
+function hideTip() { tt.classList.remove('show'); }
+
+// ── Draw bar chart ──
+function drawBars(svgId, data, valueKey, maxVal, label, avgVal) {
+  const svg = document.getElementById(svgId);
+  svg.innerHTML = '';
+  const H = parseInt(svg.getAttribute('height'));
+  const marginL = 42, marginR = 12, marginT = 10, marginB = 36;
+  const n = data.length;
+  const minW = Math.max(n * 36, 560);
+  svg.setAttribute('width', minW);
+  const W = minW;
+  const chartW = W - marginL - marginR;
+  const chartH = H - marginT - marginB;
+  const barW = Math.min((chartW / n) * 0.65, 30);
+  const gap = chartW / n;
+
+  // Grid lines
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = marginT + chartH * (1 - f);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', marginL); line.setAttribute('x2', W - marginR);
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    line.setAttribute('class','grid-line');
+    svg.appendChild(line);
+    const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x', marginL - 5);
+    txt.setAttribute('y', y + 3);
+    txt.setAttribute('text-anchor','end');
+    txt.setAttribute('class','axis-text');
+    txt.textContent = Math.round(maxVal * f) + (label || '');
+    svg.appendChild(txt);
+  });
+
+  // Avg line
+  if (avgVal != null) {
+    const y = marginT + chartH * (1 - avgVal / maxVal);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', marginL); line.setAttribute('x2', W - marginR);
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    line.setAttribute('class','avg-line-el');
+    svg.appendChild(line);
+    const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x', W - marginR - 2);
+    txt.setAttribute('y', y - 4);
+    txt.setAttribute('text-anchor','end');
+    txt.setAttribute('class','axis-text');
+    txt.setAttribute('fill','rgba(255,255,255,0.3)');
+    txt.textContent = '平均 ' + avgVal.toFixed(1);
+    svg.appendChild(txt);
+  }
+
+  // Bars + labels
+  data.forEach((d, i) => {
+    const val = d[valueKey];
+    const barH = (val / maxVal) * chartH;
+    const x = marginL + gap * i + gap / 2 - barW / 2;
+    const y = marginT + chartH - barH;
+    const color = TYPE_COLOR[d.type];
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', x); rect.setAttribute('y', y);
+    rect.setAttribute('width', barW); rect.setAttribute('height', barH);
+    rect.setAttribute('fill', color);
+    rect.setAttribute('rx', 3);
+    rect.setAttribute('class','bar-rect');
+    rect.addEventListener('mouseenter', e => showTip(e, d));
+    rect.addEventListener('mousemove',  e => moveTip(e));
+    rect.addEventListener('mouseleave', hideTip);
+    svg.appendChild(rect);
+
+    // Value label on top
+    if (barH > 18) {
+      const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('x', x + barW / 2);
+      lbl.setAttribute('y', y - 4);
+      lbl.setAttribute('text-anchor','middle');
+      lbl.setAttribute('class','axis-text');
+      lbl.setAttribute('fill', color);
+      lbl.textContent = val;
+      svg.appendChild(lbl);
+    }
+
+    // X-axis label
+    const xt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    xt.setAttribute('x', marginL + gap * i + gap / 2);
+    xt.setAttribute('y', H - marginB + 14);
+    xt.setAttribute('text-anchor','middle');
+    xt.setAttribute('class','axis-text');
+    xt.textContent = d.short;
+    svg.appendChild(xt);
+  });
+}
+
+// ── Draw weight + pace combo ──
+function drawPaceCombo(data) {
+  const filtered = data.filter(d => d.pace < 30);
+  const svg = document.getElementById('chart-pace');
+  svg.innerHTML = '';
+  const H = 240;
+  const marginL = 44, marginR = 44, marginT = 10, marginB = 36;
+  const n = filtered.length;
+  const minW = Math.max(n * 36, 560);
+  svg.setAttribute('width', minW);
+  const W = minW;
+  const chartW = W - marginL - marginR;
+  const chartH = H - marginT - marginB;
+  const maxW = 65, maxP = 25;
+  const gap = chartW / n;
+  const barW = Math.min(gap * 0.55, 28);
+
+  // Grid
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = marginT + chartH * (1 - f);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', marginL); line.setAttribute('x2', W - marginR);
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    line.setAttribute('class','grid-line'); svg.appendChild(line);
+
+    // Left axis (weight)
+    const tl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    tl.setAttribute('x', marginL - 5); tl.setAttribute('y', y + 3);
+    tl.setAttribute('text-anchor','end'); tl.setAttribute('class','axis-text');
+    tl.setAttribute('fill','#4da6ff');
+    tl.textContent = Math.round(maxW * f) + 'kg'; svg.appendChild(tl);
+
+    // Right axis (pace)
+    const tr = document.createElementNS('http://www.w3.org/2000/svg','text');
+    tr.setAttribute('x', W - marginR + 5); tr.setAttribute('y', y + 3);
+    tr.setAttribute('text-anchor','start'); tr.setAttribute('class','axis-text');
+    tr.setAttribute('fill','#ff6b4a');
+    tr.textContent = Math.round(maxP * f) + "'"; svg.appendChild(tr);
+  });
+
+  // Bars
+  filtered.forEach((d, i) => {
+    const bh = (d.weight / maxW) * chartH;
+    const x = marginL + gap * i + gap / 2 - barW / 2;
+    const y = marginT + chartH - bh;
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', x); rect.setAttribute('y', y);
+    rect.setAttribute('width', barW); rect.setAttribute('height', bh);
+    rect.setAttribute('fill', TYPE_COLOR[d.type]);
+    rect.setAttribute('rx', 3); rect.setAttribute('opacity', '0.65');
+    rect.setAttribute('class','bar-rect');
+    rect.addEventListener('mouseenter', e => showTip(e, d));
+    rect.addEventListener('mousemove',  e => moveTip(e));
+    rect.addEventListener('mouseleave', hideTip);
+    svg.appendChild(rect);
+
+    // X label
+    const xt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    xt.setAttribute('x', marginL + gap * i + gap / 2);
+    xt.setAttribute('y', H - marginB + 14);
+    xt.setAttribute('text-anchor','middle'); xt.setAttribute('class','axis-text');
+    xt.textContent = d.short; svg.appendChild(xt);
+  });
+
+  // Pace line
+  const points = filtered.map((d, i) => {
+    const cx = marginL + gap * i + gap / 2;
+    const cy = marginT + chartH * (1 - d.pace / maxP);
+    return { cx, cy, d };
+  });
+
+  // Line segments
+  for (let i = 0; i < points.length - 1; i++) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', points[i].cx); line.setAttribute('y1', points[i].cy);
+    line.setAttribute('x2', points[i+1].cx); line.setAttribute('y2', points[i+1].cy);
+    line.setAttribute('stroke','#ff6b4a'); line.setAttribute('stroke-width','2');
+    svg.appendChild(line);
+  }
+
+  // Dots
+  points.forEach(({ cx, cy, d }) => {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy);
+    circle.setAttribute('r', 4); circle.setAttribute('fill','#ff6b4a');
+    circle.setAttribute('stroke','#080b0f'); circle.setAttribute('stroke-width','2');
+    circle.setAttribute('class','bar-rect');
+    circle.addEventListener('mouseenter', e => showTip(e, d));
+    circle.addEventListener('mousemove',  e => moveTip(e));
+    circle.addEventListener('mouseleave', hideTip);
+    svg.appendChild(circle);
+  });
+}
+
+function render() {
+  const avgW = currentData.reduce((s,d) => s + d.weight, 0) / currentData.length;
+  const avgDist = currentData.reduce((s,d) => s + d.distance, 0) / currentData.length;
+  drawBars('chart-weight', currentData, 'weight',   65,  'kg', avgW);
+  drawBars('chart-dist',   currentData, 'distance', 14,  'km', avgDist);
+  drawPaceCombo(currentData);
+}
+
+function filter(type, btn) {
+  document.querySelectorAll('.pill').forEach(p => {
+    p.className = 'pill';
+    const t = p.textContent.split(' ')[0].toLowerCase();
+    if (t !== '全部') p.style.color = TYPE_COLOR[{ rucking:'Rucking',hiking:'Hiking',running:'Running',walking:'Walking' }[t]] || '';
+  });
+  activeFilter = type;
+  if (type === 'all') {
+    currentData = [...ALL_DATA];
+    btn.classList.add('active-all');
+  } else {
+    currentData = ALL_DATA.filter(d => d.type === type);
+    const cls = { Rucking:'active-ruck', Hiking:'active-hike', Running:'active-run', Walking:'active-walk' };
+    btn.classList.add(cls[type]);
+    btn.style.color = '';
+  }
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
