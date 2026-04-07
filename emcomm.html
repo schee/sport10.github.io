@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.H. Schee 部落格 - 通訊相關文章</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .blog-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .blog-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .article-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .article-title {
+            font-size: 1.3em;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .article-date {
+            color: #718096;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .article-date::before {
+            content: '📅';
+            margin-right: 5px;
+        }
+
+        .article-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .article-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px 30px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📡 T.H. Schee 部落格</h1>
+            <p class="subtitle">通訊相關文章精選</p>
+            <a href="https://blog.schee.info/" class="blog-link" target="_blank">訪問原始部落格 →</a>
+        </header>
+
+        <div class="stats">
+            <div class="stat-box">
+                <span class="stat-number">11</span>
+                <span class="stat-label">篇文章</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">3</span>
+                <span class="stat-label">主題類別</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">2025-2026</span>
+                <span class="stat-label">發布年份</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🌐 災難通訊與應急通訊</h2>
+            <div class="articles-grid">
+                <div class="article-card">
+                    <span class="article-number">1</span>
+                    <h3 class="article-title">災難時用 Meshtastic 要傳什麼？</h3>
+                    <p class="article-date">2026/04/02</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討 Mesh network 和 Meshtastic 在災難情況下的應用，分析在緊急狀況中應該傳遞什麼訊息以及如何派上用場。</p>
+                    <a href="https://blog.schee.info/2026/04/02/tw-meshtastic-in-a-crisis-situation/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">2</span>
+                    <h3 class="article-title">New Scheme for Disaster Response Communications Overview</h3>
+                    <p class="article-date">2026/01/20</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">討論國防部提出的災難應變通訊新方案，首次由武裝部隊主動支援民間第一線應變單位的通訊系統。</p>
+                    <a href="https://blog.schee.info/2026/01/20/new-scheme-for-disaster-response-communications-overview/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">3</span>
+                    <h3 class="article-title">伊朗斷網令人想起了…</h3>
+                    <p class="article-date">2026/01/15</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討自我防衛與人道救援中的通訊技術應用，涵蓋數位、類比及廣播等多種通訊方式。</p>
+                    <a href="https://blog.schee.info/2026/01/15/thoughts-on-iran-complete-offline/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">4</span>
+                    <h3 class="article-title">Danas 風災和嘉南地區通訊阻斷</h3>
+                    <p class="article-date">2025/08/04</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">分析 Danas 颱風造成高達1300個電信基地台發生障礙的案例，探究事件發生的時序與改善方向。</p>
+                    <a href="https://blog.schee.info/2025/08/04/danas-connectvity-distruption/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">5</span>
+                    <h3 class="article-title">伊朗全國數位斷網和宵禁的觀察</h3>
+                    <p class="article-date">2025/06/22</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">觀察伊朗網路全境對外斷網事件，分析一週內斷網導致的社會變化與韌性思考。</p>
+                    <a href="https://blog.schee.info/2025/06/22/iran-internet-blackout-2025/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🎯 戰術通訊與感知系統</h2>
+            <div class="articles-grid">
+                <div class="article-card">
+                    <span class="article-number">6</span>
+                    <h3 class="article-title">2026 埔里森林火災如果有 TAK/ATAK 支援</h3>
+                    <p class="article-date">2026/02/25</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">整理 TAK/ATAK 在控制森林大火的應用，主要參考美國的實戰經驗。</p>
+                    <a href="https://blog.schee.info/2026/02/25/tak-atak-and-wildfire/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">7</span>
+                    <h3 class="article-title">融入生活的 CIV-TAK/ATAK</h3>
+                    <p class="article-date">2026/01/19</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">第二場 TAK/ATAK 線上交流活動資訊，討論如何將戰術感知系統融入日常應用。</p>
+                    <a href="https://blog.schee.info/2026/01/19/civ-tak-atak/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">8</span>
+                    <h3 class="article-title">戰術感知套件 ATAK‑CIV 救災應用</h3>
+                    <p class="article-date">2025/10/10</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討 ATAK-CIV（民用版戰術感知套件）在花蓮洪災情況下的緊急應變應用思考。</p>
+                    <a href="https://blog.schee.info/2025/10/10/atak-civ-for-hadr/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🔗 災害資訊與協調</h2>
+            <div class="articles-grid">
+                <div class="article-card">
+                    <span class="article-number">9</span>
+                    <h3 class="article-title">擴大關懷義務：為烏克蘭前線人道網絡提供頻譜分析儀</h3>
+                    <p class="article-date">2026/02/04</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">談如何保護人道救援單位不受無人機威脅，介紹 Nonviolent Peaceforce 的相關報告。</p>
+                    <a href="https://blog.schee.info/2026/02/04/np-report-expanding-duty-of-care/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">10</span>
+                    <h3 class="article-title">花蓮韌性系列工作坊</h3>
+                    <p class="article-date">2025/12/04</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">討論救災的指揮和管理，特別提到日本311大地震的「軍民」「指管」挑戰。</p>
+                    <a href="https://blog.schee.info/2025/12/04/workshops-in-hualien/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+
+                <div class="article-card">
+                    <span class="article-number">11</span>
+                    <h3 class="article-title">針對災難發生時人類安全和資訊環境的思考</h3>
+                    <p class="article-date">2025/07/27</p>
+                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討災難時的資訊迷霧現象，原為台灣國防安全研究院專家工作小組討論文件。</p>
+                    <a href="https://blog.schee.info/2025/07/27/protecting-human-security-and-information-environment-in-disasters/" class="article-link" target="_blank">閱讀全文 →</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p style="margin-bottom: 10px;">資料來源：<a href="https://blog.schee.info/" style="color: white; text-decoration: underline;" target="_blank">T.H. Schee 部落格</a></p>
+            <p style="font-size: 0.9em; opacity: 0.8;">整理日期：2026年4月7日</p>
+        </footer>
+    </div>
+</body>
+</html>
