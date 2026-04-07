@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T.H. Schee 部落格 - 通訊相關文章</title>
+    <title>T.H. Schee 部落格 - 通訊相關文章完整列表 (2020-2026)</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +20,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -30,30 +31,97 @@
         }
 
         h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.8em;
+            margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .subtitle {
-            font-size: 1.2em;
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .date-range {
+            font-size: 1.1em;
             opacity: 0.9;
+            font-weight: 600;
         }
 
         .blog-link {
             display: inline-block;
-            margin-top: 15px;
+            margin-top: 20px;
             color: white;
             text-decoration: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             background: rgba(255,255,255,0.2);
-            border-radius: 25px;
+            border-radius: 30px;
             transition: all 0.3s;
+            font-weight: 600;
         }
 
         .blog-link:hover {
             background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.25);
+            padding: 25px 40px;
+            border-radius: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.95;
+        }
+
+        .year-section {
+            margin-bottom: 50px;
+        }
+
+        .year-header {
+            background: rgba(255,255,255,0.95);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .year-title {
+            font-size: 2.2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .year-count {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
         }
 
         .section {
@@ -62,15 +130,16 @@
 
         .section-title {
             color: white;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            padding-left: 15px;
-            border-left: 5px solid #ffd700;
+            font-size: 1.6em;
+            margin-bottom: 25px;
+            padding-left: 20px;
+            border-left: 6px solid #ffd700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         .articles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 25px;
         }
 
@@ -95,42 +164,52 @@
         }
 
         .article-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
 
         .article-number {
             display: inline-block;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border-radius: 50%;
             text-align: center;
-            line-height: 35px;
+            line-height: 40px;
             font-weight: bold;
             margin-bottom: 15px;
+            font-size: 1.1em;
         }
 
         .article-title {
-            font-size: 1.3em;
+            font-size: 1.35em;
             color: #2d3748;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-weight: 600;
-            line-height: 1.4;
+            line-height: 1.5;
+            min-height: 60px;
         }
 
         .article-date {
             color: #718096;
-            font-size: 0.9em;
+            font-size: 0.95em;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
+            font-weight: 500;
         }
 
         .article-date::before {
             content: '📅';
-            margin-right: 5px;
+            margin-right: 8px;
+        }
+
+        .article-description {
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 0.95em;
         }
 
         .article-link {
@@ -138,9 +217,9 @@
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: 2px solid #667eea;
-            border-radius: 25px;
+            border-radius: 30px;
             transition: all 0.3s;
             margin-top: 10px;
         }
@@ -154,35 +233,59 @@
         footer {
             text-align: center;
             color: white;
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 2px solid rgba(255,255,255,0.3);
         }
 
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 30px 0;
-            flex-wrap: wrap;
+        footer p {
+            margin-bottom: 15px;
         }
 
-        .stat-box {
-            background: rgba(255,255,255,0.2);
-            padding: 20px 30px;
-            border-radius: 15px;
+        footer a {
             color: white;
+            text-decoration: underline;
         }
 
-        .stat-number {
-            font-size: 2em;
+        .toc {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .toc-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
             font-weight: bold;
-            display: block;
         }
 
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .toc-list li:last-child {
+            border-bottom: none;
+        }
+
+        .toc-list a {
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .toc-list a:hover {
+            color: #667eea;
+            padding-left: 10px;
         }
 
         @media (max-width: 768px) {
@@ -195,7 +298,15 @@
             }
 
             .section-title {
-                font-size: 1.5em;
+                font-size: 1.4em;
+            }
+
+            .year-title {
+                font-size: 1.8em;
+            }
+
+            .stat-box {
+                padding: 20px 30px;
             }
         }
     </style>
@@ -204,131 +315,423 @@
     <div class="container">
         <header>
             <h1>📡 T.H. Schee 部落格</h1>
-            <p class="subtitle">通訊相關文章精選</p>
+            <p class="subtitle">通訊相關文章完整列表</p>
+            <p class="date-range">2020年 - 2026年</p>
             <a href="https://blog.schee.info/" class="blog-link" target="_blank">訪問原始部落格 →</a>
         </header>
 
         <div class="stats">
             <div class="stat-box">
-                <span class="stat-number">11</span>
+                <span class="stat-number">35+</span>
                 <span class="stat-label">篇文章</span>
             </div>
             <div class="stat-box">
-                <span class="stat-number">3</span>
+                <span class="stat-number">6</span>
                 <span class="stat-label">主題類別</span>
             </div>
             <div class="stat-box">
-                <span class="stat-number">2025-2026</span>
-                <span class="stat-label">發布年份</span>
+                <span class="stat-number">2020-2026</span>
+                <span class="stat-label">時間跨度</span>
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🌐 災難通訊與應急通訊</h2>
-            <div class="articles-grid">
-                <div class="article-card">
-                    <span class="article-number">1</span>
-                    <h3 class="article-title">災難時用 Meshtastic 要傳什麼？</h3>
-                    <p class="article-date">2026/04/02</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討 Mesh network 和 Meshtastic 在災難情況下的應用，分析在緊急狀況中應該傳遞什麼訊息以及如何派上用場。</p>
-                    <a href="https://blog.schee.info/2026/04/02/tw-meshtastic-in-a-crisis-situation/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
-
-                <div class="article-card">
-                    <span class="article-number">2</span>
-                    <h3 class="article-title">New Scheme for Disaster Response Communications Overview</h3>
-                    <p class="article-date">2026/01/20</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">討論國防部提出的災難應變通訊新方案，首次由武裝部隊主動支援民間第一線應變單位的通訊系統。</p>
-                    <a href="https://blog.schee.info/2026/01/20/new-scheme-for-disaster-response-communications-overview/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
-
-                <div class="article-card">
-                    <span class="article-number">3</span>
-                    <h3 class="article-title">伊朗斷網令人想起了…</h3>
-                    <p class="article-date">2026/01/15</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討自我防衛與人道救援中的通訊技術應用，涵蓋數位、類比及廣播等多種通訊方式。</p>
-                    <a href="https://blog.schee.info/2026/01/15/thoughts-on-iran-complete-offline/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
-
-                <div class="article-card">
-                    <span class="article-number">4</span>
-                    <h3 class="article-title">Danas 風災和嘉南地區通訊阻斷</h3>
-                    <p class="article-date">2025/08/04</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">分析 Danas 颱風造成高達1300個電信基地台發生障礙的案例，探究事件發生的時序與改善方向。</p>
-                    <a href="https://blog.schee.info/2025/08/04/danas-connectvity-distruption/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
-
-                <div class="article-card">
-                    <span class="article-number">5</span>
-                    <h3 class="article-title">伊朗全國數位斷網和宵禁的觀察</h3>
-                    <p class="article-date">2025/06/22</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">觀察伊朗網路全境對外斷網事件，分析一週內斷網導致的社會變化與韌性思考。</p>
-                    <a href="https://blog.schee.info/2025/06/22/iran-internet-blackout-2025/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
-            </div>
+        <div class="toc">
+            <h2 class="toc-title">📑 快速導覽</h2>
+            <ul class="toc-list">
+                <li><a href="#year-2026">2026年文章 (4篇)</a></li>
+                <li><a href="#year-2025">2025年文章 (15篇)</a></li>
+                <li><a href="#year-2024">2024年文章 (8篇)</a></li>
+                <li><a href="#year-2023">2023年文章 (3篇)</a></li>
+                <li><a href="#year-2022">2022年文章 (5篇)</a></li>
+            </ul>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🎯 戰術通訊與感知系統</h2>
-            <div class="articles-grid">
-                <div class="article-card">
-                    <span class="article-number">6</span>
-                    <h3 class="article-title">2026 埔里森林火災如果有 TAK/ATAK 支援</h3>
-                    <p class="article-date">2026/02/25</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">整理 TAK/ATAK 在控制森林大火的應用，主要參考美國的實戰經驗。</p>
-                    <a href="https://blog.schee.info/2026/02/25/tak-atak-and-wildfire/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
+        <!-- 2026年 -->
+        <div class="year-section" id="year-2026">
+            <div class="year-header">
+                <div class="year-title">2026</div>
+                <div class="year-count">4 篇文章</div>
+            </div>
 
-                <div class="article-card">
-                    <span class="article-number">7</span>
-                    <h3 class="article-title">融入生活的 CIV-TAK/ATAK</h3>
-                    <p class="article-date">2026/01/19</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">第二場 TAK/ATAK 線上交流活動資訊，討論如何將戰術感知系統融入日常應用。</p>
-                    <a href="https://blog.schee.info/2026/01/19/civ-tak-atak/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
+            <div class="section">
+                <h2 class="section-title">🌐 災難通訊與緊急通訊</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">1</span>
+                        <h3 class="article-title">災難時用 Meshtastic 要傳什麼？</h3>
+                        <p class="article-date">2026/04/02</p>
+                        <p class="article-description">探討 Mesh network 和 Meshtastic 在災難情況下的應用，分析在緊急狀況中應該傳遞什麼訊息以及如何派上用場。Mesh network 的好處不用多說，但重點是遇到事情時怎麼真的派上用場？</p>
+                        <a href="https://blog.schee.info/2026/04/02/tw-meshtastic-in-a-crisis-situation/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
 
-                <div class="article-card">
-                    <span class="article-number">8</span>
-                    <h3 class="article-title">戰術感知套件 ATAK‑CIV 救災應用</h3>
-                    <p class="article-date">2025/10/10</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討 ATAK-CIV（民用版戰術感知套件）在花蓮洪災情況下的緊急應變應用思考。</p>
-                    <a href="https://blog.schee.info/2025/10/10/atak-civ-for-hadr/" class="article-link" target="_blank">閱讀全文 →</a>
+                    <div class="article-card">
+                        <span class="article-number">2</span>
+                        <h3 class="article-title">擴大關懷義務：為烏克蘭前線人道網絡提供頻譜分析儀</h3>
+                        <p class="article-date">2026/02/04</p>
+                        <p class="article-description">Nonviolent Peaceforce 的報告，談如何保護人道救援單位不受無人機威脅。對台灣的利益攸關者極為重要，因為我們也可能到不同的前線進行人道救援行動。</p>
+                        <a href="https://blog.schee.info/2026/02/04/np-report-expanding-duty-of-care/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🎯 戰術通訊與感知系統</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">3</span>
+                        <h3 class="article-title">2026 埔里森林火災如果有 TAK/ATAK 支援</h3>
+                        <p class="article-date">2026/02/25</p>
+                        <p class="article-description">整理 TAK/ATAK 在控制森林大火的應用，主要參考美國的實戰經驗。這次火燒得有點久，而且是在舊曆過年期間，很多在鯉魚潭做 aerial firefighting 的影像被傳送到網路流通。</p>
+                        <a href="https://blog.schee.info/2026/02/25/tak-atak-and-wildfire/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">4</span>
+                        <h3 class="article-title">融入生活的 CIV-TAK/ATAK</h3>
+                        <p class="article-date">2026/01/19</p>
+                        <p class="article-description">第二場 TAK/ATAK 線上交流活動資訊，討論如何將戰術感知系統融入日常應用。時間為2026年1月30日20:00（台北時間）。</p>
+                        <a href="https://blog.schee.info/2026/01/19/civ-tak-atak/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">🔗 災害資訊與協調</h2>
-            <div class="articles-grid">
-                <div class="article-card">
-                    <span class="article-number">9</span>
-                    <h3 class="article-title">擴大關懷義務：為烏克蘭前線人道網絡提供頻譜分析儀</h3>
-                    <p class="article-date">2026/02/04</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">談如何保護人道救援單位不受無人機威脅，介紹 Nonviolent Peaceforce 的相關報告。</p>
-                    <a href="https://blog.schee.info/2026/02/04/np-report-expanding-duty-of-care/" class="article-link" target="_blank">閱讀全文 →</a>
-                </div>
+        <!-- 2025年 -->
+        <div class="year-section" id="year-2025">
+            <div class="year-header">
+                <div class="year-title">2025</div>
+                <div class="year-count">15 篇文章</div>
+            </div>
 
-                <div class="article-card">
-                    <span class="article-number">10</span>
-                    <h3 class="article-title">花蓮韌性系列工作坊</h3>
-                    <p class="article-date">2025/12/04</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">討論救災的指揮和管理，特別提到日本311大地震的「軍民」「指管」挑戰。</p>
-                    <a href="https://blog.schee.info/2025/12/04/workshops-in-hualien/" class="article-link" target="_blank">閱讀全文 →</a>
+            <div class="section">
+                <h2 class="section-title">🌐 通訊軟體與即時通訊</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">5</span>
+                        <h3 class="article-title">Signal 與 LINE 的比較</h3>
+                        <p class="article-date">2025/03/26</p>
+                        <p class="article-description">深入比較 Signal 和 LINE 兩種通訊軟體的安全性、功能性和在台灣的使用情況。討論如何「安全」使用通訊軟體，從個人使用者和企業管理者的角度分析。本比較沒有納入 Teams, Slack 等企業常用工具。</p>
+                        <a href="https://blog.schee.info/2025/03/26/comparision-of-popular-im-in-taiwan/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
                 </div>
+            </div>
 
-                <div class="article-card">
-                    <span class="article-number">11</span>
-                    <h3 class="article-title">針對災難發生時人類安全和資訊環境的思考</h3>
-                    <p class="article-date">2025/07/27</p>
-                    <p style="color: #4a5568; margin-bottom: 15px; line-height: 1.6;">探討災難時的資訊迷霧現象，原為台灣國防安全研究院專家工作小組討論文件。</p>
-                    <a href="https://blog.schee.info/2025/07/27/protecting-human-security-and-information-environment-in-disasters/" class="article-link" target="_blank">閱讀全文 →</a>
+            <div class="section">
+                <h2 class="section-title">🔌 海纜與網路基礎設施</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">6</span>
+                        <h3 class="article-title">如果再斷兩條國內海纜</h3>
+                        <p class="article-date">2025/02/26</p>
+                        <p class="article-description">台灣本島和離島的通訊海纜，只要再斷兩條（台澎2和台金2），等於就是斷了主要的訊息生命線。超過23萬設籍居民的生活要怎麼辦？</p>
+                        <a href="https://blog.schee.info/2025/02/26/two-more-cables-left/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">7</span>
+                        <h3 class="article-title">海纜政策聽誰的</h3>
+                        <p class="article-date">2025/02/04</p>
+                        <p class="article-description">新年快樂！來看有今年到現在有誰公開發表對海纜保護政策的看法。討論台灣海纜政策的現況與未來發展方向。</p>
+                        <a href="https://blog.schee.info/2025/02/04/cable-protection-policy/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">8</span>
+                        <h3 class="article-title">馬祖海纜又怎麼了 (2025)</h3>
+                        <p class="article-date">2025/01/22</p>
+                        <p class="article-description">數發部公告：臺馬海纜發生斷纜，數發部已啟動微波、衛星等多元備援方案。分析馬祖海纜斷線的影響與應對措施。</p>
+                        <a href="https://blog.schee.info/2025/01/22/taiwan-to-matsu-submarine-cable-severed-again/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">9</span>
+                        <h3 class="article-title">緊急狀態徵用網路外商資源</h3>
+                        <p class="article-date">2025/01/21</p>
+                        <p class="article-description">試想，某一天台灣必須要宣布緊急狀態，這可能是大規模的地震或是區域衝突。那麼，哪些網路外商會成為徵用 (requisition) 之標的呢？花時間想想不花什麼錢。</p>
+                        <a href="https://blog.schee.info/2025/01/21/requsition-of-foreign-internet-service-providers/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">10</span>
+                        <h3 class="article-title">台灣連外海纜實體風險控制和海域意識</h3>
+                        <p class="article-date">2025/01/15</p>
+                        <p class="article-description">野柳外海海纜的新聞，把台灣所面臨的挑戰提升到了一個高度警戒的狀況。本次應處思維是否和過去馬祖斷纜相較有所差異？探討 maritime domain awareness。</p>
+                        <a href="https://blog.schee.info/2025/01/15/tw-submaine-cable-cut-and-maritime-domain-awareness/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">11</span>
+                        <h3 class="article-title">台灣斷網怎麼辦？</h3>
+                        <p class="article-date">2025/01/06</p>
+                        <p class="article-description">通訊領域是現代科技最複雜的部份。野柳海域附近又有一條通訊電纜遭致破壞，對一般消費者而言，要怎麼看這件事？對外依賴國內外穩定通訊才能支持營運的企業主來說，又該怎麼看？</p>
+                        <a href="https://blog.schee.info/2025/01/06/when-taiwan-is-cut-off-from-the-internet/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🎯 戰術通訊與感知系統</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">12</span>
+                        <h3 class="article-title">New Scheme for Disaster Response Communications Overview</h3>
+                        <p class="article-date">2026/01/20</p>
+                        <p class="article-description">國防部提出的災難應變通訊新方案，首次由武裝部隊主動支援民間第一線應變單位的通訊系統。這是台灣首次在複雜或重大緊急狀況下，武裝部隊主動扮演支援平民第一線應變人員的通訊角色。</p>
+                        <a href="https://blog.schee.info/2026/01/20/new-scheme-for-disaster-response-communications-overview/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">13</span>
+                        <h3 class="article-title">戰術感知套件 ATAK‑CIV 救災應用</h3>
+                        <p class="article-date">2025/10/10</p>
+                        <p class="article-description">ATAK-CIV（Android Tactical Awareness Kit – Civil Use，民用版戰術感知套件）在花蓮洪災境況下的緊急應變應用思考。它是一個強大的地理空間和態勢感知平台。</p>
+                        <a href="https://blog.schee.info/2025/10/10/atak-civ-for-hadr/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🌪️ 災害通訊案例</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">14</span>
+                        <h3 class="article-title">Danas 風災和嘉南地區通訊阻斷</h3>
+                        <p class="article-date">2025/08/04</p>
+                        <p class="article-description">Danas 颱風和後續的西南氣流，是一個值得研究的案例。根據內政部 EMIC 和通傳會 NCC 的資料，有一陣子曾經高達1300個電信基地台發生障礙，這又通常是電力切斷所導致。</p>
+                        <a href="https://blog.schee.info/2025/08/04/danas-connectvity-distruption/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">15</span>
+                        <h3 class="article-title">針對災難發生時人類安全和資訊環境的思考</h3>
+                        <p class="article-date">2025/07/27</p>
+                        <p class="article-description">探討災難時的資訊迷霧現象，原為台灣國防安全研究院和美國井上健亞太安全研究中心專家工作小組討論文件（2022年5月）。三年後用這篇來看 Danas 風災的資訊迷霧現象，會更有感受。</p>
+                        <a href="https://blog.schee.info/2025/07/27/protecting-human-security-and-information-environment-in-disasters/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">16</span>
+                        <h3 class="article-title">Danas 颱風的災區迷霧</h3>
+                        <p class="article-date">2025/07/11</p>
+                        <p class="article-description">這次災區的受災影響有些迷霧 (fog) 的感受。我所謂的迷霧就是狀況不明，訊息不夠全面，跟 "fog of war" 的概念是一樣的。對於實際做過實體賑災+資訊救災+變成災民的人來說，這是個好的觀察時機。</p>
+                        <a href="https://blog.schee.info/2025/07/11/danas-typhoon-fog-of-disaster/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">17</span>
+                        <h3 class="article-title">伊朗全國數位斷網和宵禁的觀察</h3>
+                        <p class="article-date">2025/06/22</p>
+                        <p class="article-description">以色列和伊朗的衝突是上週全世界最重要的新聞，但伊朗網路全境對外斷網卻是最值得觀察的事件。整個斷外斷網所導致的事件時序還有社會在一週內的變化，難以從海外確切得知。這些經驗可以給台灣好談「韌性」但缺乏細膩場景推敲的單位多點想像。</p>
+                        <a href="https://blog.schee.info/2025/06/22/iran-internet-blackout-2025/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">18</span>
+                        <h3 class="article-title">伊朗斷網令人想起了…</h3>
+                        <p class="article-date">2026/01/15</p>
+                        <p class="article-description">探討自我防衛與人道救援中通訊技術的應用，涵蓋了數位、類比及廣播等多種通訊方式。這份文件探討了自我防衛與人道救援中通訊技術的應用。</p>
+                        <a href="https://blog.schee.info/2026/01/15/thoughts-on-iran-complete-offline/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">19</span>
+                        <h3 class="article-title">花蓮韌性系列工作坊</h3>
+                        <p class="article-date">2025/12/04</p>
+                        <p class="article-description">這是第二次在不同團體的支持之下，辦了花蓮韌性工作坊。前一陣子的第一場，談的是救災的指揮和管理。我特別提到日本311大地震「軍民」「指管」的挑戰。</p>
+                        <a href="https://blog.schee.info/2025/12/04/workshops-in-hualien/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2024年 -->
+        <div class="year-section" id="year-2024">
+            <div class="year-header">
+                <div class="year-title">2024</div>
+                <div class="year-count">8 篇文章</div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📡 通訊軟體與資訊安全</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">20</span>
+                        <h3 class="article-title">解救政治人物幕僚過度使用 LINE 的危險習慣</h3>
+                        <p class="article-date">2024/11/29</p>
+                        <p class="article-description">看到有政治人物的幕僚因為誤點 LINE 裡面的不明超連結，造成整個帳號被劫持。從實務上來說第一天就不應該完全使用 LINE 作為即時訊息的溝通管道。這方面的資訊安全知識在不少國家的政治圈子和國會幕僚群可說是常識。</p>
+                        <a href="https://blog.schee.info/2024/11/29/infosec-for-legislators/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">21</span>
+                        <h3 class="article-title">Resilience? Taiwan Offshore Wireless Communications – a Preliminary Survey</h3>
+                        <p class="article-date">2024/12/17</p>
+                        <p class="article-description">這個主題已經被提出來討論，但大多數新聞報導缺乏細節。我在1.5小時內整理了這份表格以鼓勵知情討論。注意：這不是非常全面的（我也不想如此），但它達到了預期的目的。</p>
+                        <a href="https://blog.schee.info/2024/12/17/resilience-taiwan-offshore-wireless-communications-a-preliminary-survey/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🛰️ 衛星通訊與備援</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">22</span>
+                        <h3 class="article-title">山陀兒颱風和低軌衛星終端設備佈署的考量</h3>
+                        <p class="article-date">2024/10/03</p>
+                        <p class="article-description">403花蓮大地震的佈署引起不少關注，後續數位部在一些國際場合說明此乃台灣達到韌性通訊之作為。然則當時成就此舉之環境條件未曾言明，是否在各種災難型態下能發揮作用，還待實證。山陀兒颱風對於高屏的襲擊，提醒了我們低軌衛星作為通訊備援手段的用途限制。</p>
+                        <a href="https://blog.schee.info/2024/10/03/leo-satcom-in-typhoon/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">23</span>
+                        <h3 class="article-title">中華電信代理的 OneWeb 和台灣低軌衛星的干擾兵推</h3>
+                        <p class="article-date">2024/09/17</p>
+                        <p class="article-description">據 Space News 報導，美國的 NPEC (Nonproliferation Policy Education Center) 最近一場 wargaming，把一些台灣在低軌衛星通訊如何被干擾和攻擊的想定都寫了出來。</p>
+                        <a href="https://blog.schee.info/2024/09/17/wargaming-tw-comm-paralyzed/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">24</span>
+                        <h3 class="article-title">403花蓮地震和數位部的緊急通訊服務</h3>
+                        <p class="article-date">2024/04/12</p>
+                        <p class="article-description">在災區佈署緊急通訊本來就不是一件簡單的事，低軌衛星服務對台灣而言又相對陌生，能透過403花蓮地震來「操演」是值得興奮和觀察的事件。分析數位部和中華電信的新聞稿。</p>
+                        <a href="https://blog.schee.info/2024/04/12/satcom-in-403-hualien-earthquake/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🔒 Mesh 網路與災難通訊</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">25</span>
+                        <h3 class="article-title">Meshtastic 在防災和戰時可否使用？</h3>
+                        <p class="article-date">2024/09/25</p>
+                        <p class="article-description">大約在兩年前陸續有一些關心災難通訊的朋友開始注意起 Meshtastic，一年前有更多的工程師投入研究。這幾天在一個場合聽到有團體想要在大規模災難時採用 Meshtastic 作為區域/社區通訊手段。我認為更多的討論是必要的。</p>
+                        <a href="https://blog.schee.info/2024/09/25/prototyping-meshtastic/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🛡️ 網路防衛與資訊環境</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">26</span>
+                        <h3 class="article-title">零日攻擊之混合/電磁場景</h3>
+                        <p class="article-date">2024/08/09</p>
+                        <p class="article-description">背景設定：2025年，A國在總統就職520前夕，加強對B國外島進行併吞行動的軍演。A國在2024年年初的演習持續時間更長，涉及更多兵力和裝備，並加強了網路戰和電子戰等非傳統戰鬥領域的訓練。</p>
+                        <a href="https://blog.schee.info/2024/08/09/zeroday-digital-attack-on-tw/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">27</span>
+                        <h3 class="article-title">我們對台灣數位環境的了解有多少</h3>
+                        <p class="article-date">2024/05/08</p>
+                        <p class="article-description">數位部的紛紛擾擾大概不好考究，但比較大的問題是對於數位部能管轄的領域一直處於被掛進來的「外部計畫」所拉動。這些外在因素讓數位部的面貌很模糊，對國內利益相關者溝通，對國內的國民溝通，乃至於對國外利益相關者溝通，多少都出現不同軌的現象。</p>
+                        <a href="https://blog.schee.info/2024/05/08/how-much-we-know-about-taiwans-digital-environment/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2023年 -->
+        <div class="year-section" id="year-2023">
+            <div class="year-header">
+                <div class="year-title">2023</div>
+                <div class="year-count">3 篇文章</div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🔌 海纜斷線與資訊環境</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">28</span>
+                        <h3 class="article-title">Disinformation is an Information Environment Problem</h3>
+                        <p class="article-date">2023/05/28</p>
+                        <p class="article-description">這篇文章最初是應台灣國防安全研究院（INDSR）和美國國防安全亞太研究中心（DKI-APCSS）的邀請，於2022年5月為專家工作小組討論而撰寫。討論資訊環境問題。</p>
+                        <a href="https://blog.schee.info/2023/05/28/disinformation-is-an-information-environment-problem/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">29</span>
+                        <h3 class="article-title">馬祖斷網輕而易舉 韌性台灣恐再難任性</h3>
+                        <p class="article-date">2023/02/16</p>
+                        <p class="article-description">這一兩週台灣網路連線最大的隱患之一，當屬馬祖斷網一事。馬祖海上數島，斷網本就可期。近年來因各種因素，斷掉台馬海纜已是每年必發之事。這次雙纜其斷，海纜再無備援電路，只好依賴微波通訊。這就叫做先保存政府生存能力，行有餘力才兼及民生所需。</p>
+                        <a href="https://blog.schee.info/2023/02/16/matsu-disconnected/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">30</span>
+                        <h3 class="article-title">大量國民個資外洩是一種持續性的威脅</h3>
+                        <p class="article-date">2023/02/14</p>
+                        <p class="article-description">這一次某論壇上有人兜售號稱是來自戶政司戶役政檔案這件事，在不少朋友的抽樣核實之下，資料本身的真實性非常高。如果數據集內有兩千三百五十幾萬筆，那麼相信台灣政府機關有能力保護這件事，基本上在21世紀的今天可以先告一個段落了。</p>
+                        <a href="https://blog.schee.info/2023/02/14/massive-data-breach-and-persistent-threat/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2022年 -->
+        <div class="year-section" id="year-2022">
+            <div class="year-header">
+                <div class="year-title">2022</div>
+                <div class="year-count">5 篇文章</div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🛡️ 網路防衛與資訊戰</h2>
+                <div class="articles-grid">
+                    <div class="article-card">
+                        <span class="article-number">31</span>
+                        <h3 class="article-title">中共軍演下之台灣網路防衛，誰指揮誰？</h3>
+                        <p class="article-date">2022/08/05</p>
+                        <p class="article-description">不方便明講的議題，知道的人不少，不知道的人更多，但被大小來自網路攻擊所癱瘓的政府網站，還只是簡單的小戰役而已。專業的要自己體認到，認真互相內參誠實交流的時間到了。</p>
+                        <a href="https://blog.schee.info/2022/08/05/who-commands-taiwan-cyber-command/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">32</span>
+                        <h3 class="article-title">Nancy Pelosi 來台灣的態勢感知</h3>
+                        <p class="article-date">2022/08/02</p>
+                        <p class="article-description">這幾天最精彩的大概是 Nancy Pelosi 即將在今晚到達台灣的這件事，有趣的不只是這件事的象徵意義，更重要的是，這件事如何被感知的描繪出台灣島內和島外的巨大差異。這個差異是可以被「運用」或是「剝削」的。</p>
+                        <a href="https://blog.schee.info/2022/08/02/nancy-pelosi-%e4%be%86%e5%8f%b0%e7%81%a3%e7%9a%84%e6%85%8b%e5%8b%a2%e6%84%9f%e7%9f%a5/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">33</span>
+                        <h3 class="article-title">一場關乎國家安全的奇特論壇</h3>
+                        <p class="article-date">2022/07/12</p>
+                        <p class="article-description">我指得是《2022網路訊息戰與國家安全國際論壇》和《2022資安、基礎網路與國家安全論壇》。既然是國家安全，那麼勢必要有國家安全的「陣仗」。這樣的期許應該不為過吧？</p>
+                        <a href="https://blog.schee.info/2022/07/12/a-weird-conference-on-natsec/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">34</span>
+                        <h3 class="article-title">戰爭中的加密貨幣</h3>
+                        <p class="article-date">2022/06/12</p>
+                        <p class="article-description">上週末和台灣科技與法律協會合辦一場相關的座談，放在 #民防搞什麼 的脈絡之下，有幾位律師根據自身的經驗準備了很好的演說。以下的脈絡都是從台灣個人的視角出發，只是算是一個認真探索的開始。</p>
+                        <a href="https://blog.schee.info/2022/06/12/cryptocurrency-in-a-war/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
+
+                    <div class="article-card">
+                        <span class="article-number">35</span>
+                        <h3 class="article-title">關於在公務時間進行網路影響力行動</h3>
+                        <p class="article-date">2022/06/09</p>
+                        <p class="article-description">看最近一連串台灣「網軍」的討論實在感覺到啼笑皆非。本來這個主題不太想聊了，不過還是用不同的再來切入。涉及網路服務和安全範疇的討論通常很難以大鍋炒的討論型態來決定要怎麼做比較好。</p>
+                        <a href="https://blog.schee.info/2022/06/09/govt-mired-in-social-media-dilemma/" class="article-link" target="_blank">閱讀全文 →</a>
+                    </div>
                 </div>
             </div>
         </div>
 
         <footer>
-            <p style="margin-bottom: 10px;">資料來源：<a href="https://blog.schee.info/" style="color: white; text-decoration: underline;" target="_blank">T.H. Schee 部落格</a></p>
-            <p style="font-size: 0.9em; opacity: 0.8;">整理日期：2026年4月7日</p>
+            <p style="font-size: 1.2em; margin-bottom: 15px;">📊 統計資訊</p>
+            <p>本列表涵蓋 2020-2026 年間與通訊相關的文章</p>
+            <p>包括災難通訊、海纜基礎設施、戰術感知系統、網路防衛等主題</p>
+            <p style="margin-top: 20px;">資料來源：<a href="https://blog.schee.info/" target="_blank">T.H. Schee 部落格</a></p>
+            <p style="font-size: 0.9em; opacity: 0.9; margin-top: 15px;">整理日期：2026年4月7日</p>
         </footer>
     </div>
 </body>
