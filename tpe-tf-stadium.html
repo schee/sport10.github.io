@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臺北田徑場平面圖 Taipei Track and Field Stadium Layout</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 1200px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+        .track {
+            fill: none;
+            stroke: #000;
+            stroke-width: 2;
+        }
+        .field-area {
+            fill: none;
+            stroke: #000;
+            stroke-width: 2;
+        }
+        .gate-box {
+            fill: white;
+            stroke: #000;
+            stroke-width: 2;
+        }
+        .label {
+            font-size: 14px;
+            fill: #000;
+        }
+        .label-small {
+            font-size: 11px;
+            fill: #333;
+        }
+        .gate-label {
+            font-size: 16px;
+            font-weight: bold;
+            fill: #000;
+        }
+        .dotted-area {
+            fill: none;
+            stroke: #000;
+            stroke-width: 1.5;
+            stroke-dasharray: 3, 3;
+        }
+        .north-arrow {
+            stroke: #000;
+            stroke-width: 2;
+            fill: #000;
+        }
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .section-label {
+            font-size: 18px;
+            font-weight: bold;
+            fill: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>臺北田徑場平面圖<br>Taipei Track and Field Stadium Layout</h1>
+        
+        <svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- North Arrow -->
+            <g transform="translate(100, 50)">
+                <polygon points="0,-30 -15,0 15,0" class="north-arrow"/>
+                <line x1="0" y1="0" x2="0" y2="30" class="north-arrow"/>
+                <line x1="-20" y1="0" x2="20" y2="0" class="north-arrow"/>
+                <text x="30" y="5" class="label">北 N</text>
+            </g>
+            
+            <!-- Main Track Oval -->
+            <ellipse cx="450" cy="300" rx="320" ry="180" class="track"/>
+            
+            <!-- Inner Field -->
+            <ellipse cx="450" cy="300" rx="240" ry="100" class="field-area"/>
+            
+            <!-- Top Building Area -->
+            <rect x="350" y="80" width="200" height="30" fill="white" stroke="#000" stroke-width="2"/>
+            <text x="450" y="100" text-anchor="middle" class="label">三級跳、跳遠</text>
+            <text x="450" y="115" text-anchor="middle" class="label-small">Triple Jump, Long Jump</text>
+            
+            <rect x="600" y="80" width="80" height="30" fill="white" stroke="#000" stroke-width="2"/>
+            <text x="640" y="100" text-anchor="middle" class="label-small">器材室</text>
+            <text x="640" y="113" text-anchor="middle" class="label-small" font-size="9">Equipment</text>
+            
+            <!-- Section Labels on Track -->
+            <text x="230" y="150" class="section-label">F</text>
+            <text x="530" y="150" class="section-label">E</text>
+            <text x="230" y="450" class="section-label">A</text>
+            <text x="300" y="450" class="section-label">B</text>
+            <text x="380" y="450" class="section-label">C</text>
+            <text x="600" y="450" class="section-label">D</text>
+            
+            <!-- Gates -->
+            <g transform="translate(130, 180)">
+                <rect x="-30" y="-15" width="30" height="30" class="gate-box"/>
+                <text x="-15" y="5" text-anchor="middle" class="label-small">人</text>
+                <text x="-70" y="5" class="gate-label">GATE B</text>
+            </g>
+            
+            <g transform="translate(770, 180)">
+                <rect x="0" y="-15" width="30" height="30" class="gate-box"/>
+                <text x="15" y="5" text-anchor="middle" class="label-small">人</text>
+                <text x="70" y="5" class="gate-label">GATE C</text>
+            </g>
+            
+            <g transform="translate(130, 420)">
+                <rect x="-30" y="-15" width="30" height="30" class="gate-box"/>
+                <text x="-15" y="5" text-anchor="middle" class="label-small">人</text>
+                <text x="-70" y="5" class="gate-label">GATE A</text>
+            </g>
+            
+            <g transform="translate(770, 420)">
+                <rect x="0" y="-15" width="30" height="30" class="gate-box"/>
+                <text x="15" y="5" text-anchor="middle" class="label-small">人</text>
+                <text x="70" y="5" class="gate-label">GATE D</text>
+            </g>
+            
+            <!-- Field Event Areas -->
+            <!-- Pole Vault (left) -->
+            <rect x="190" y="230" width="70" height="90" class="dotted-area"/>
+            <text x="225" y="220" text-anchor="middle" class="label-small">撐竿跳高</text>
+            <text x="225" y="233" text-anchor="middle" class="label-small" font-size="9">Pole Vault</text>
+            
+            <!-- Javelin, Shot Put, Discus (left side) -->
+            <line x1="260" y1="270" x2="310" y2="270" stroke="#000" stroke-width="1"/>
+            <text x="310" y="265" class="label-small">標槍 Javelin</text>
+            
+            <line x1="260" y1="290" x2="310" y2="295" stroke="#000" stroke-width="1" stroke-dasharray="2,2"/>
+            <text x="310" y="285" class="label-small">鏈球 Hammer</text>
+            
+            <circle cx="310" cy="330" r="15" fill="none" stroke="#000" stroke-width="1"/>
+            <text x="340" y="335" class="label-small">鉛球 Shot Put</text>
+            
+            <!-- High Jump (right side) -->
+            <rect x="590" y="220" width="80" height="120" class="dotted-area"/>
+            <text x="630" y="290" text-anchor="middle" class="label">跳高</text>
+            <text x="630" y="305" text-anchor="middle" class="label-small" font-size="9">High Jump</text>
+            
+            <!-- Discus/Hammer Throw (top right) -->
+            <circle cx="640" cy="190" r="25" fill="none" stroke="#000" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <text x="620" y="165" class="label-small">鐵餅</text>
+            <text x="615" y="177" class="label-small" font-size="9">Discus</text>
+            <text x="620" y="185" class="label-small">鏈球</text>
+            <text x="615" y="197" class="label-small" font-size="9">Hammer</text>
+            
+            <!-- Bottom Facilities -->
+            <rect x="200" y="500" width="90" height="30" fill="white" stroke="#000" stroke-width="2"/>
+            <text x="245" y="518" text-anchor="middle" class="label-small">檢錄處</text>
+            <text x="245" y="530" text-anchor="middle" class="label-small" font-size="9">Check-in</text>
+            
+            <rect x="380" y="510" width="100" height="35" fill="white" stroke="#000" stroke-width="2"/>
+            <text x="430" y="528" text-anchor="middle" class="label-small">司令台 (2樓)</text>
+            <text x="430" y="540" text-anchor="middle" class="label-small" font-size="9">Command Center (2F)</text>
+            
+            <rect x="550" y="500" width="90" height="30" fill="white" stroke="#000" stroke-width="2"/>
+            <text x="595" y="518" text-anchor="middle" class="label-small">競賽組</text>
+            <text x="595" y="530" text-anchor="middle" class="label-small" font-size="9">Competition</text>
+            
+            <rect x="690" y="485" width="120" height="40" fill="white" stroke="#000" stroke-width="2"/>
+            <text x="750" y="503" text-anchor="middle" class="label-small">運動傷害防護站</text>
+            <text x="750" y="518" text-anchor="middle" class="label-small" font-size="9">Sports Injury</text>
+            <text x="750" y="528" text-anchor="middle" class="label-small" font-size="9">Prevention Station</text>
+            
+            <!-- Bottom Label -->
+            <text x="450" y="570" text-anchor="middle" class="label">臺北田徑場 (1樓玻璃門)</text>
+            <text x="450" y="585" text-anchor="middle" class="label-small">Taipei Track and Field Stadium (1F Glass Door)</text>
+        </svg>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">項目<br>Event</th>
+                    <th colspan="2">起終點<br>Start/Finish</th>
+                    <th rowspan="2">項目<br>Event</th>
+                    <th colspan="2">起終點<br>Start/Finish</th>
+                    <th rowspan="2">項目<br>Event</th>
+                    <th colspan="4">起終點 Start/Finish</th>
+                </tr>
+                <tr>
+                    <th>起點<br>Start</th>
+                    <th>終點<br>Finish</th>
+                    <th>起點<br>Start</th>
+                    <th>終點<br>Finish</th>
+                    <th>起點<br>Start</th>
+                    <th>二棒<br>2nd</th>
+                    <th>三棒<br>3rd</th>
+                    <th>四棒<br>4th</th>
+                    <th>終點<br>Finish</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>60M</td>
+                    <td>C</td>
+                    <td>D</td>
+                    <td>3000M 競走<br>3000M Race Walk</td>
+                    <td>F</td>
+                    <td>D</td>
+                    <td>4X100M 接力<br>4X100M Relay</td>
+                    <td>D</td>
+                    <td>E</td>
+                    <td>F</td>
+                    <td>B</td>
+                    <td>D</td>
+                </tr>
+                <tr>
+                    <td>100M</td>
+                    <td>B</td>
+                    <td>D</td>
+                    <td>5000M 競走<br>5000M Race Walk</td>
+                    <td>F</td>
+                    <td>D</td>
+                    <td>4X200M 接力<br>4X200M Relay</td>
+                    <td>D</td>
+                    <td>F</td>
+                    <td>D</td>
+                    <td>F</td>
+                    <td>D</td>
+                </tr>
+                <tr>
+                    <td>200M</td>
+                    <td>F</td>
+                    <td>D</td>
+                    <td>100M 跨欄<br>100M Hurdles</td>
+                    <td>B</td>
+                    <td>D</td>
+                    <td>4X400M 接力<br>4X400M Relay</td>
+                    <td>D</td>
+                    <td>D</td>
+                    <td>D</td>
+                    <td>D</td>
+                    <td>D</td>
+                </tr>
+                <tr>
+                    <td>400M</td>
+                    <td>D</td>
+                    <td>D</td>
+                    <td>110M 跨欄<br>110M Hurdles</td>
+                    <td>A</td>
+                    <td>D</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>800M</td>
+                    <td>D</td>
+                    <td>D</td>
+                    <td>400M 跨欄<br>400M Hurdles</td>
+                    <td>D</td>
+                    <td>D</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>1500M</td>
+                    <td>E</td>
+                    <td>D</td>
+                    <td>2000M 障礙<br>2000M Steeplechase</td>
+                    <td>D</td>
+                    <td>D</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3000M</td>
+                    <td>F</td>
+                    <td>D</td>
+                    <td>3000M 障礙<br>3000M Steeplechase</td>
+                    <td>F</td>
+                    <td>D</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>5000M</td>
+                    <td>F</td>
+                    <td>D</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
