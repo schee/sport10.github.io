@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rucking 訓練儀表板</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Orbitron:wght@700;900&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2d5016;
+            --primary-light: #4a7c2a;
+            --accent: #9fef00;
+            --accent-bright: #c5ff5c;
+            --bg: #0a0e0a;
+            --surface: #151a13;
+            --surface-elevated: #1f2619;
+            --text: #e8f5e0;
+            --text-muted: #8fa888;
+            --border: #2d5016;
+            --grid: rgba(159, 239, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    var(--grid) 2px,
+                    var(--grid) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    var(--grid) 2px,
+                    var(--grid) 4px
+                );
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(159, 239, 0, 0.3);
+        }
+
+        .subtitle {
+            font-family: 'Roboto Mono', monospace;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out backwards;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent), var(--accent-bright));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        .stat-card:nth-child(5) { animation-delay: 0.5s; }
+        .stat-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent-bright);
+            line-height: 1;
+        }
+
+        .stat-unit {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-left: 0.3rem;
+        }
+
+        .chart-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out 0.7s backwards;
+        }
+
+        .chart-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 100%;
+            gap: 0.5rem;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--primary), var(--accent));
+            position: relative;
+            transition: all 0.3s ease;
+            border-top: 2px solid var(--accent-bright);
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            filter: brightness(1.3);
+            transform: translateY(-5px);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-bright);
+            white-space: nowrap;
+        }
+
+        .progression-section {
+            background: var(--surface-elevated);
+            border: 2px solid var(--accent);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 30px rgba(159, 239, 0, 0.1);
+            animation: fadeIn 0.8s ease-out 0.9s backwards;
+        }
+
+        .progression-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent-bright);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .progression-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .progression-item {
+            border-left: 3px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        .progression-item h3 {
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .progression-item p {
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .metric-highlight {
+            display: inline-block;
+            background: rgba(159, 239, 0, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 700;
+            color: var(--accent-bright);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            animation: fadeIn 0.8s ease-out 1.1s backwards;
+        }
+
+        .data-table thead {
+            background: var(--primary);
+            color: var(--accent-bright);
+            font-family: 'Roboto Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tbody tr {
+            background: var(--surface);
+            transition: background 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--surface-elevated);
+        }
+
+        .intensity-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: 'Roboto Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .intensity-低 {
+            background: rgba(159, 239, 0, 0.2);
+            color: var(--accent-bright);
+        }
+
+        .intensity-中 {
+            background: rgba(255, 200, 0, 0.2);
+            color: #ffd700;
+        }
+
+        .intensity-高 {
+            background: rgba(255, 100, 0, 0.2);
+            color: #ff6347;
+        }
+
+        .line-chart {
+            position: relative;
+            height: 250px;
+            margin-top: 2rem;
+        }
+
+        .line-chart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(159, 239, 0, 0.5));
+        }
+
+        .chart-point {
+            fill: var(--accent-bright);
+            stroke: var(--bg);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: r 0.2s;
+        }
+
+        .chart-point:hover {
+            r: 8;
+        }
+
+        .chart-grid {
+            stroke: var(--border);
+            stroke-width: 1;
+            opacity: 0.3;
+        }
+
+        .chart-axis {
+            stroke: var(--text-muted);
+            stroke-width: 1;
+        }
+
+        .chart-label {
+            fill: var(--text-muted);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .progression-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Rucking Dashboard</h1>
+            <div class="subtitle">TRAINING PERFORMANCE ANALYTICS • 30 SESSIONS TRACKED</div>
+        </header>
+
+        <div class="stats-grid" id="statsGrid">
+            <!-- Stats will be populated by JavaScript -->
+        </div>
+
+        <div class="progression-section">
+            <div class="progression-title">📈 進步軌跡分析</div>
+            <div class="progression-grid">
+                <div class="progression-item">
+                    <h3>🎯 負重進階</h3>
+                    <p>從第 1 週平均 <span class="metric-highlight">10kg</span> 穩定提升至第 5 週 <span class="metric-highlight">18kg</span>，增長 <span class="metric-highlight">80%</span>。這顯示你的肌力與承重能力有顯著進步，建議繼續以每週 2kg 的速度漸進式增加。</p>
+                </div>
+                <div class="progression-item">
+                    <h3>🏃 訓練量提升</h3>
+                    <p>每週總距離從 <span class="metric-highlight">18.0km</span> 增加到 <span class="metric-highlight">19.5km</span>，同時訓練時長從 180 分鐘增至 200 分鐘。訓練量穩定增長約 <span class="metric-highlight">8.3%</span>，符合健康的進階原則。</p>
+                </div>
+                <div class="progression-item">
+                    <h3>⚡ 能量消耗</h3>
+                    <p>每週總消耗從 <span class="metric-highlight">1,500 大卡</span> 提升至 <span class="metric-highlight">1,740 大卡</span>，增長 <span class="metric-highlight">16%</span>。這與負重增加和訓練強度提升直接相關，代表訓練效益持續優化。</p>
+                </div>
+                <div class="progression-item">
+                    <h3>💪 疲勞管理</h3>
+                    <p>儘管負重與訓練量增加，體感疲勞度僅從 5.33 微升至 6.00，保持在可控範圍。這顯示你的身體適應良好，恢復能力正在提升。建議持續關注恢復狀態，避免過度訓練。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">每週訓練量趨勢</div>
+            <div class="chart-container">
+                <div class="bar-chart" id="weeklyDistanceChart"></div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">負重進階曲線</div>
+            <div class="line-chart" id="weightProgressionChart"></div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">訓練記錄明細</div>
+            <div style="overflow-x: auto;">
+                <table class="data-table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>訓練主題</th>
+                            <th>距離</th>
+                            <th>負重</th>
+                            <th>時長</th>
+                            <th>強度</th>
+                            <th>疲勞度</th>
+                            <th>熱量</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data from the Excel file
+        const data = {"records": [{"訓練日期": "2024-01-01", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 10, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 500, "心率區間": "Zone 2", "訓練強度": "低", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "良好", "備註": "第一次嘗試負重訓練"}, {"訓練日期": "2024-01-03", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 10, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 500, "心率區間": "Zone 2", "訓練強度": "低", "地形類型": "平路", "天氣狀況": "多雲", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "良好", "備註": "感覺比上次輕鬆"}, {"訓練日期": "2024-01-05", "訓練類型": "Rucking", "訓練主題": "速度訓練", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 10, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 500, "心率區間": "Zone 3", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "尚可", "備註": "增加配速訓練"}, {"訓練日期": "2024-01-08", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 12, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 520, "心率區間": "Zone 2", "訓練強度": "低", "地形類型": "平路", "天氣狀況": "陰天", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "良好", "備註": "增加負重至12kg"}, {"訓練日期": "2024-01-10", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 65, "訓練距離 (公里)": 6.5, "負重 (公斤)": 12, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 540, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "良好", "備註": "感覺身體適應良好"}, {"訓練日期": "2024-01-12", "訓練類型": "Rucking", "訓練主題": "爬坡訓練", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 12, "平均配速 (分/公里)": "10:30", "總消耗熱量 (大卡)": 490, "心率區間": "Zone 3", "訓練強度": "中", "地形類型": "坡地", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "尚可", "備註": "第一次嘗試爬坡"}, {"訓練日期": "2024-01-15", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 14, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 530, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "增加負重至14kg"}, {"訓練日期": "2024-01-17", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 14, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 520, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "多雲", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "良好", "備註": "持續適應中"}, {"訓練日期": "2024-01-19", "訓練類型": "Rucking", "訓練主題": "速度訓練", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.5, "負重 (公斤)": 14, "平均配速 (分/公里)": "9:15", "總消耗熱量 (大卡)": 530, "心率區間": "Zone 3", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "尚可", "備註": "速度有所提升"}, {"訓練日期": "2024-01-22", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 16, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 550, "心率區間": "Zone 2-3", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "陰天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "增加負重至16kg"}, {"訓練日期": "2024-01-24", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 70, "訓練距離 (公里)": 7.0, "負重 (公斤)": 16, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 580, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "距離增加至7km"}, {"訓練日期": "2024-01-26", "訓練類型": "Rucking", "訓練主題": "爬坡訓練", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 16, "平均配速 (分/公里)": "10:30", "總消耗熱量 (大卡)": 550, "心率區間": "Zone 3", "訓練強度": "高", "地形類型": "坡地", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "尚可", "備註": "坡地訓練強度提升"}, {"訓練日期": "2024-01-29", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 70, "訓練距離 (公里)": 7.0, "負重 (公斤)": 18, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 600, "心率區間": "Zone 2-3", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "增加負重至18kg"}, {"訓練日期": "2024-01-31", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 75, "訓練距離 (公里)": 7.5, "負重 (公斤)": 18, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 620, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "多雲", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "距離增加至7.5km"}, {"訓練日期": "2024-02-02", "訓練類型": "Rucking", "訓練主題": "速度訓練", "訓練時長 (分鐘)": 55, "訓練距離 (公里)": 5.0, "負重 (公斤)": 18, "平均配速 (分/公里)": "9:00", "總消耗熱量 (大卡)": 520, "心率區間": "Zone 3-4", "訓練強度": "高", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "尚可", "備註": "高強度速度訓練"}, {"訓練日期": "2024-02-05", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 30, "訓練距離 (公里)": 3.0, "負重 (公斤)": 8, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 280, "心率區間": "Zone 1-2", "訓練強度": "低", "地形類型": "平路", "天氣狀況": "雨天", "體感疲勞度 (1-10)": 2, "訓練後恢復狀態": "優秀", "備註": "輕量恢復訓練"}, {"訓練日期": "2024-02-07", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 10, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 500, "心率區間": "Zone 2", "訓練強度": "低", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 4, "訓練後恢復狀態": "良好", "備註": "恢復期訓練"}, {"訓練日期": "2024-02-09", "訓練類型": "Rucking", "訓練主題": "速度訓練", "訓練時長 (分鐘)": 50, "訓練距離 (公里)": 5.0, "負重 (公斤)": 12, "平均配速 (分/公里)": "9:30", "總消耗熱量 (大卡)": 450, "心率區間": "Zone 3", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "良好", "備註": "逐步恢復強度"}, {"訓練日期": "2024-02-12", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 14, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 520, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "陰天", "體感疲勞度 (1-10)": 5, "訓練後恢復狀態": "良好", "備註": "回到正常訓練節奏"}, {"訓練日期": "2024-02-14", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 75, "訓練距離 (公里)": 7.5, "負重 (公斤)": 16, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 620, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "長距離耐力訓練"}, {"訓練日期": "2024-02-16", "訓練類型": "Rucking", "訓練主題": "爬坡訓練", "訓練時長 (分鐘)": 70, "訓練距離 (公里)": 6.5, "負重 (公斤)": 18, "平均配速 (分/公里)": "10:45", "總消耗熱量 (大卡)": 650, "心率區間": "Zone 3", "訓練強度": "高", "地形類型": "坡地", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 7, "訓練後恢復狀態": "尚可", "備註": "挑戰性坡地訓練"}, {"訓練日期": "2024-02-19", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 80, "訓練距離 (公里)": 8.0, "負重 (公斤)": 18, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 680, "心率區間": "Zone 2-3", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "距離突破8km"}, {"訓練日期": "2024-02-21", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 85, "訓練距離 (公里)": 8.5, "負重 (公斤)": 20, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 720, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "多雲", "體感疲勞度 (1-10)": 7, "訓練後恢復狀態": "良好", "備註": "負重達到20kg"}, {"訓練日期": "2024-02-23", "訓練類型": "Rucking", "訓練主題": "速度訓練", "訓練時長 (分鐘)": 60, "訓練距離 (公里)": 6.0, "負重 (公斤)": 18, "平均配速 (分/公里)": "9:00", "總消耗熱量 (大卡)": 600, "心率區間": "Zone 3-4", "訓練強度": "高", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 7, "訓練後恢復狀態": "尚可", "備註": "配速明顯提升"}, {"訓練日期": "2024-02-26", "訓練類型": "Rucking", "訓練主題": "基礎負重適應", "訓練時長 (分鐘)": 90, "訓練距離 (公里)": 9.0, "負重 (公斤)": 20, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 760, "心率區間": "Zone 2-3", "訓練強度": "中", "地形類型": "混合", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 7, "訓練後恢復狀態": "良好", "備註": "距離突破9km"}, {"訓練日期": "2024-02-28", "訓練類型": "Rucking", "訓練主題": "耐力建立", "訓練時長 (分鐘)": 90, "訓練距離 (公里)": 9.0, "負重 (公斤)": 20, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 750, "心率區間": "Zone 2", "訓練強度": "中", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 6, "訓練後恢復狀態": "良好", "備註": "耐力明顯提升"}, {"訓練日期": "2024-03-01", "訓練類型": "Rucking", "訓練主題": "爬坡訓練", "訓練時長 (分鐘)": 80, "訓練距離 (公里)": 7.5, "負重 (公斤)": 20, "平均配速 (分/公里)": "10:40", "總消耗熱量 (大卡)": 720, "心率區間": "Zone 3", "訓練強度": "高", "地形類型": "坡地", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 7, "訓練後恢復狀態": "尚可", "備註": "坡地適應良好"}, {"訓練日期": "2024-03-03", "訓練類型": "Rucking", "訓練主題": "長距離挑戰", "訓練時長 (分鐘)": 90, "訓練距離 (公里)": 10.0, "負重 (公斤)": 18, "平均配速 (分/公里)": "9:00", "總消耗熱量 (大卡)": 800, "心率區間": "Zone 2-3", "訓練強度": "高", "地形類型": "混合", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 8, "訓練後恢復狀態": "尚可", "備註": "成功完成10km挑戰"}, {"訓練日期": "2024-03-05", "訓練類型": "Rucking", "訓練主題": "恢復訓練", "訓練時長 (分鐘)": 40, "訓練距離 (公里)": 4.0, "負重 (公斤)": 10, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 350, "心率區間": "Zone 1-2", "訓練強度": "低", "地形類型": "平路", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 3, "訓練後恢復狀態": "優秀", "備註": "輕鬆恢復日"}, {"訓練日期": "2024-03-07", "訓練類型": "Rucking", "訓練主題": "綜合訓練", "訓練時長 (分鐘)": 85, "訓練距離 (公里)": 8.5, "負重 (公斤)": 20, "平均配速 (分/公里)": "10:00", "總消耗熱量 (大卡)": 850, "心率區間": "Zone 2-3", "訓練強度": "高", "地形類型": "混合", "天氣狀況": "晴天", "體感疲勞度 (1-10)": 7, "訓練後恢復狀態": "良好", "備註": "綜合表現優異"}], "weekly_stats": [{"週數": 1, "訓練距離 (公里)": 18.0, "負重 (公斤)": 10.0, "訓練時長 (分鐘)": 180, "總消耗熱量 (大卡)": 1500, "體感疲勞度 (1-10)": 5.33}, {"週數": 2, "訓練距離 (公里)": 18.5, "負重 (公斤)": 12.0, "訓練時長 (分鐘)": 185, "總消耗熱量 (大卡)": 1550, "體感疲勞度 (1-10)": 5.0}, {"週數": 3, "訓練距離 (公里)": 18.5, "負重 (公斤)": 14.0, "訓練時長 (分鐘)": 180, "總消耗熱量 (大卡)": 1580, "體感疲勞度 (1-10)": 5.67}, {"週數": 4, "訓練距離 (公里)": 19.0, "負重 (公斤)": 16.0, "訓練時長 (分鐘)": 190, "總消耗熱量 (大卡)": 1680, "體感疲勞度 (1-10)": 6.0}, {"週數": 5, "訓練距離 (公里)": 19.5, "負重 (公斤)": 18.0, "訓練時長 (分鐘)": 200, "總消耗熱量 (大卡)": 1740, "體感疲勞度 (1-10)": 6.0}, {"週數": 6, "訓練距離 (公里)": 17.5, "負重 (公斤)": 13.33, "訓練時長 (分鐘)": 140, "總消耗熱量 (大卡)": 1230, "體感疲勞度 (1-10)": 3.67}, {"週數": 7, "訓練距離 (公里)": 20.0, "負重 (公斤)": 16.0, "訓練時長 (分鐘)": 205, "總消耗熱量 (大卡)": 1950, "體感疲勞度 (1-10)": 6.33}, {"週數": 8, "訓練距離 (公里)": 24.5, "負重 (公斤)": 19.33, "訓練時長 (分鐘)": 260, "總消耗熱量 (大卡)": 2230, "體感疲勞度 (1-10)": 6.67}, {"週數": 9, "訓練距離 (公里)": 27.5, "負重 (公斤)": 19.33, "訓練時長 (分鐘)": 260, "總消耗熱量 (大卡)": 2370, "體感疲勞度 (1-10)": 6.67}, {"週數": 10, "訓練距離 (公里)": 20.5, "負重 (公斤)": 16.0, "訓練時長 (分鐘)": 215, "總消耗熱量 (大卡)": 2000, "體感疲勞度 (1-10)": 6.0}], "summary": {"total_sessions": 30, "total_distance": 183.5, "total_duration": 1845, "avg_weight": 14.0, "max_weight": 20, "total_calories": 16150}};
+
+        // Populate summary stats
+        const statsGrid = document.getElementById('statsGrid');
+        const stats = [
+            { label: 'Total Sessions', value: data.summary.total_sessions, unit: '次' },
+            { label: 'Total Distance', value: data.summary.total_distance.toFixed(1), unit: 'km' },
+            { label: 'Total Duration', value: Math.floor(data.summary.total_duration / 60), unit: '小時' },
+            { label: 'Avg Weight', value: data.summary.avg_weight.toFixed(1), unit: 'kg' },
+            { label: 'Max Weight', value: data.summary.max_weight, unit: 'kg' },
+            { label: 'Total Calories', value: data.summary.total_calories.toLocaleString(), unit: 'kcal' }
+        ];
+
+        stats.forEach(stat => {
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+            card.innerHTML = `
+                <div class="stat-label">${stat.label}</div>
+                <div class="stat-value">
+                    ${stat.value}
+                    <span class="stat-unit">${stat.unit}</span>
+                </div>
+            `;
+            statsGrid.appendChild(card);
+        });
+
+        // Weekly distance bar chart
+        const weeklyChart = document.getElementById('weeklyDistanceChart');
+        const maxDistance = Math.max(...data.weekly_stats.map(w => w['訓練距離 (公里)']));
+        
+        data.weekly_stats.forEach(week => {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            const height = (week['訓練距離 (公里)'] / maxDistance) * 100;
+            bar.style.height = height + '%';
+            bar.innerHTML = `
+                <div class="bar-value">${week['訓練距離 (公里)']}km</div>
+                <div class="bar-label">W${week['週數']}</div>
+            `;
+            weeklyChart.appendChild(bar);
+        });
+
+        // Weight progression line chart
+        const weightChart = document.getElementById('weightProgressionChart');
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 1000 250');
+        
+        const weeks = data.weekly_stats.length;
+        const maxWeight = Math.max(...data.weekly_stats.map(w => w['負重 (公斤)']));
+        const minWeight = Math.min(...data.weekly_stats.map(w => w['負重 (公斤)']));
+        const weightRange = maxWeight - minWeight;
+        
+        // Grid lines
+        for (let i = 0; i <= 5; i++) {
+            const y = 30 + (i * 40);
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '50');
+            line.setAttribute('y1', y);
+            line.setAttribute('x2', '950');
+            line.setAttribute('y2', y);
+            line.setAttribute('class', 'chart-grid');
+            svg.appendChild(line);
+            
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', '35');
+            label.setAttribute('y', y + 4);
+            label.setAttribute('class', 'chart-label');
+            label.setAttribute('text-anchor', 'end');
+            label.textContent = Math.round(maxWeight - (i * weightRange / 5)) + 'kg';
+            svg.appendChild(label);
+        }
+        
+        // Line path
+        let pathData = '';
+        const points = [];
+        
+        data.weekly_stats.forEach((week, index) => {
+            const x = 50 + (index * (900 / (weeks - 1)));
+            const normalizedWeight = (week['負重 (公斤)'] - minWeight) / weightRange;
+            const y = 230 - (normalizedWeight * 200);
+            points.push({ x, y });
+            
+            if (index === 0) {
+                pathData += `M ${x} ${y}`;
+            } else {
+                pathData += ` L ${x} ${y}`;
+            }
+            
+            // Week labels
+            const weekLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            weekLabel.setAttribute('x', x);
+            weekLabel.setAttribute('y', '245');
+            weekLabel.setAttribute('class', 'chart-label');
+            weekLabel.setAttribute('text-anchor', 'middle');
+            weekLabel.textContent = 'W' + week['週數'];
+            svg.appendChild(weekLabel);
+        });
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('class', 'chart-line');
+        svg.appendChild(path);
+        
+        // Points
+        points.forEach(point => {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', point.x);
+            circle.setAttribute('cy', point.y);
+            circle.setAttribute('r', '5');
+            circle.setAttribute('class', 'chart-point');
+            svg.appendChild(circle);
+        });
+        
+        weightChart.appendChild(svg);
+
+        // Data table
+        const tableBody = document.getElementById('tableBody');
+        data.records.forEach(record => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${record['訓練日期']}</td>
+                <td>${record['訓練主題']}</td>
+                <td>${record['訓練距離 (公里)']} km</td>
+                <td>${record['負重 (公斤)']} kg</td>
+                <td>${record['訓練時長 (分鐘)']} 分</td>
+                <td><span class="intensity-badge intensity-${record['訓練強度']}">${record['訓練強度']}</span></td>
+                <td>${record['體感疲勞度 (1-10)']}/10</td>
+                <td>${record['總消耗熱量 (大卡)']} kcal</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
