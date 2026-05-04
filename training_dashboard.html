@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綜合訓練儀表板 | Training Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Orbitron:wght@700;900&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2d5016;
+            --primary-light: #4a7c2a;
+            --accent: #9fef00;
+            --accent-bright: #c5ff5c;
+            --bg: #0a0e0a;
+            --surface: #151a13;
+            --surface-elevated: #1f2619;
+            --text: #e8f5e0;
+            --text-muted: #8fa888;
+            --border: #2d5016;
+            --grid: rgba(159, 239, 0, 0.08);
+            --rucking: #9fef00;
+            --hiking: #ffa500;
+            --running: #00bfff;
+            --walking: #ff69b4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    var(--grid) 2px,
+                    var(--grid) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    var(--grid) 2px,
+                    var(--grid) 4px
+                );
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(159, 239, 0, 0.3);
+        }
+
+        .subtitle {
+            font-family: 'Roboto Mono', monospace;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out backwards;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent), var(--accent-bright));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        .stat-card:nth-child(5) { animation-delay: 0.5s; }
+        .stat-card:nth-child(6) { animation-delay: 0.6s; }
+        .stat-card:nth-child(7) { animation-delay: 0.7s; }
+        .stat-card:nth-child(8) { animation-delay: 0.8s; }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-bright);
+            line-height: 1;
+        }
+
+        .stat-unit {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-left: 0.3rem;
+        }
+
+        .chart-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out 0.7s backwards;
+        }
+
+        .chart-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .progression-section {
+            background: var(--surface-elevated);
+            border: 2px solid var(--accent);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 30px rgba(159, 239, 0, 0.1);
+            animation: fadeIn 0.8s ease-out 0.9s backwards;
+        }
+
+        .progression-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent-bright);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .progression-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .progression-item {
+            border-left: 3px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        .progression-item h3 {
+            font-family: 'Noto Sans TC', sans-serif;
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .progression-item p {
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .metric-highlight {
+            display: inline-block;
+            background: rgba(159, 239, 0, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 700;
+            color: var(--accent-bright);
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            animation: fadeIn 0.8s ease-out 1.1s backwards;
+        }
+
+        .data-table thead {
+            background: var(--primary);
+            color: var(--accent-bright);
+            font-family: 'Roboto Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tbody tr {
+            background: var(--surface);
+            transition: background 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--surface-elevated);
+        }
+
+        .activity-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: 'Roboto Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .badge-rucking {
+            background: rgba(159, 239, 0, 0.2);
+            color: var(--rucking);
+        }
+
+        .badge-hiking {
+            background: rgba(255, 165, 0, 0.2);
+            color: var(--hiking);
+        }
+
+        .badge-running {
+            background: rgba(0, 191, 255, 0.2);
+            color: var(--running);
+        }
+
+        .badge-walking {
+            background: rgba(255, 105, 180, 0.2);
+            color: var(--walking);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-bottom: 2rem;
+        }
+
+        .line-chart {
+            position: relative;
+            height: 300px;
+        }
+
+        .line-chart svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke-width: 2.5;
+            filter: drop-shadow(0 0 6px rgba(159, 239, 0, 0.4));
+        }
+
+        .chart-point {
+            stroke: var(--bg);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: r 0.2s;
+        }
+
+        .chart-point:hover {
+            r: 7;
+        }
+
+        .chart-grid {
+            stroke: var(--border);
+            stroke-width: 1;
+            opacity: 0.3;
+        }
+
+        .chart-label {
+            fill: var(--text-muted);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            height: 100%;
+            gap: 0.3rem;
+            padding-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .bar {
+            flex-shrink: 0;
+            width: 40px;
+            position: relative;
+            transition: all 0.3s ease;
+            border-top: 2px solid;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            filter: brightness(1.3);
+            transform: translateY(-5px);
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .progression-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Training Dashboard</h1>
+            <div class="subtitle">COMPREHENSIVE PERFORMANCE ANALYTICS • 25 SESSIONS • 2025/02 - 2026/05</div>
+        </header>
+
+        <div class="stats-grid" id="statsGrid">
+            <!-- Stats will be populated by JavaScript -->
+        </div>
+
+        <div class="progression-section">
+            <div class="progression-title">📈 訓練進步與多樣性分析</div>
+            <div class="progression-grid">
+                <div class="progression-item">
+                    <h3>💪 Rucking 專項進化</h3>
+                    <p>共完成 <span class="metric-highlight">15 次</span> Rucking 訓練，累積 <span class="metric-highlight">68.24km</span>。平均負重 <span class="metric-highlight">25.9kg</span>，最大挑戰達 <span class="metric-highlight">57kg</span>（2025-12-28）。從河濱平路到山徑階梯，從標準背包到農夫走路、扁擔式負重，訓練方式極為多元。</p>
+                </div>
+                <div class="progression-item">
+                    <h3>⛰️ Hiking 登山能力</h3>
+                    <p><span class="metric-highlight">5 次</span> Hiking 訓練貢獻了 <span class="metric-highlight">961m</span> 的總爬升（占總爬升 74%），單次最高達 243m。雖然距離較短（12.59km），但垂直爬升強度極高，展現優秀的登山耐力和心肺能力。</p>
+                </div>
+                <div class="progression-item">
+                    <h3>🏃 Running 速度訓練</h3>
+                    <p><span class="metric-highlight">4 次</span> Running 訓練，總計 <span class="metric-highlight">18.90km</span>。平均配速從 5.35 到 6.33 分/公里，在輕量負重（平均 3.5kg）下維持優秀的跑步速度，補充了 Rucking 缺少的速度訓練元素。</p>
+                </div>
+                <div class="progression-item">
+                    <h3>🎯 訓練系統完整性</h3>
+                    <p>結合 Rucking（力量耐力）、Hiking（爬升能力）、Running（速度）、Walking（恢復），構成完整的功能性體能訓練系統。總累積 <span class="metric-highlight">112.88km</span> 距離、<span class="metric-highlight">1,304m</span> 爬升，展現全方位的運動能力。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">訓練類型與負重分布</div>
+            <div class="chart-container">
+                <div class="bar-chart" id="weightChart"></div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--rucking);"></div>
+                    <span>Rucking</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--hiking);"></div>
+                    <span>Hiking</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--running);"></div>
+                    <span>Running</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--walking);"></div>
+                    <span>Walking</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">距離趨勢變化（按日期時序）</div>
+            <div class="line-chart" id="distanceChart"></div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">完整訓練記錄</div>
+            <div style="overflow-x: auto;">
+                <table class="data-table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>類型</th>
+                            <th>重量 (kg)</th>
+                            <th>距離 (km)</th>
+                            <th>爬升 (m)</th>
+                            <th>時間</th>
+                            <th>配速 (min/km)</th>
+                            <th>訓練備註</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Complete training data (25 records)
+        const data = {"records": [{"日期": "2025-02-16", "類型": "Rucking", "重量": 23.0, "距離": 3.2, "爬升": 0.0, "時間": "0:24:00", "配速": 7.3, "備註": "河濱/便宜背包/訓練鞋"}, {"日期": "2025-07-06", "類型": "Rucking", "重量": 16.0, "距離": 10.0, "爬升": 0.0, "時間": "01:17:00", "配速": 7.42, "備註": "河濱/便宜背包/中筒越野跑鞋"}, {"日期": "2025-07-09", "類型": "Running", "重量": 4.0, "距離": 6.25, "爬升": 0.0, "時間": "00:37:00", "配速": 5.55, "備註": "河濱/刻意跑跑停停/戰術背心/碳版跑鞋"}, {"日期": "2025-07-13", "類型": "Walking", "重量": 6.0, "距離": 13.15, "爬升": 0.0, "時間": "01:51:00", "配速": 8.26, "備註": "市區/河濱/休閒服/休閒背包/訓練鞋"}, {"日期": "2025-07-16", "類型": "Rucking", "重量": 29.0, "距離": 8.34, "爬升": 0.0, "時間": "1:29:00", "配速": 10.4, "備註": "河濱/老舊登山背包/便宜短桶靴"}, {"日期": "2025-07-19", "類型": "Running", "重量": 6.0, "距離": 4.96, "爬升": 0.0, "時間": "0:31:25", "配速": 6.33, "備註": "河濱/戰術背心/碳板跑鞋"}, {"日期": "2025-07-21", "類型": "Running", "重量": 2.0, "距離": 4.07, "爬升": 0.0, "時間": "00:23:46", "配速": 5.5, "備註": "河濱/戰術背心/碳板跑鞋"}, {"日期": "2025-07-22", "類型": "Hiking", "重量": 16.0, "距離": 1.6, "爬升": 118.0, "時間": "00:21:30", "配速": 13.21, "備註": "山路/戰術背包/便宜短筒靴"}, {"日期": "2025-07-22", "類型": "Hiking", "重量": 16.0, "距離": 1.2, "爬升": 168.0, "時間": "00:25:09", "配速": 20.4, "備註": "山路/戰術背包/便宜短筒靴"}, {"日期": "2025-07-24", "類型": "Rucking", "重量": 16.0, "距離": 7.53, "爬升": 0.0, "時間": "01:11:56", "配速": 9.33, "備註": "大雨/河濱/戰術背包/便宜短筒靴"}, {"日期": "2025-07-25", "類型": "Running", "重量": 2.0, "距離": 3.62, "爬升": 0.0, "時間": "00:20:13", "配速": 5.35, "備註": "大雨/河濱/戰術背心/爛跑鞋"}, {"日期": "2025-07-27", "類型": "Hiking", "重量": 2.0, "距離": 4.32, "爬升": 243.0, "時間": "00:50:12", "配速": 11.37, "備註": "山路/戰術背心/中筒越野跑鞋"}, {"日期": "2025-07-29", "類型": "Hiking", "重量": 4.0, "距離": 1.9, "爬升": 195.0, "時間": "00:28:40", "配速": 15.05, "備註": "山徑/戰術背心"}, {"日期": "2025-07-30", "類型": "Hiking", "重量": 4.0, "距離": 3.57, "爬升": 237.0, "時間": "00:49:02", "配速": 13.43, "備註": "山徑/戰術背心"}, {"日期": "2025-07-31", "類型": "Rucking", "重量": 21.0, "距離": 8.65, "爬升": 122.0, "時間": "01:40:12", "配速": 11.35, "備註": "山路/戰術背心/戰術背包/氣溫35"}, {"日期": "2025-12-28", "類型": "Rucking", "重量": 57.0, "距離": 3.14, "爬升": 23.0, "時間": "0:34:12", "配速": 10.53, "備註": "河濱/陰雨/便宜背包/電腦包/長褲/短筒靴"}, {"日期": "2026-02-14", "類型": "Rucking", "重量": 20.0, "距離": 3.14, "爬升": 11.0, "時間": "0:30:59", "配速": 9.51, "備註": "河濱/跑鞋/晴/單手提10公斤*2"}, {"日期": "2026-02-15", "類型": "Rucking", "重量": 32.0, "距離": 3.14, "爬升": 16.0, "時間": "0:31:06", "配速": 9.54, "備註": "河濱/跑鞋/背20/手提8+4公斤"}, {"日期": "2026-02-16", "類型": "Rucking", "重量": 22.0, "距離": 3.03, "爬升": 17.0, "時間": "0:32:26", "配速": 10.4, "備註": "河濱/跑鞋/用鐵棍掛10+10公斤(類扁擔)"}, {"日期": "2026-02-17", "類型": "Rucking", "重量": 38.0, "距離": 3.0, "爬升": 8.0, "時間": "0:29:15", "配速": 9.45, "備註": "河濱/單爛包/便鞋"}, {"日期": "2026-02-24", "類型": "Rucking", "重量": 5.0, "距離": 3.0, "爬升": 3.0, "時間": "0:18:23", "配速": 6.07, "備註": "河濱/戰術背心/爛跑鞋/超快走"}, {"日期": "2026-03-04", "類型": "Rucking", "重量": 50.0, "距離": 0.25, "爬升": 94.0, "時間": "0:09:03", "配速": 37.13, "備註": "烘爐地階梯/下雨/中筒登山靴/牛仔褲/前21公斤後29公斤"}, {"日期": "2026-03-13", "類型": "Rucking", "重量": 16.0, "距離": 3.2, "爬升": 12.0, "時間": "0:24:06", "配速": 7.3, "備註": "河濱/牛仔褲/中筒登山靴"}, {"日期": "2026-03-14", "類型": "Rucking", "重量": 32.0, "距離": 2.0, "爬升": 13.0, "時間": "0:23:17", "配速": 11.38, "備註": "農夫走路/長褲/中筒登山靴/手提沙袋16kg*2"}, {"日期": "2026-05-01", "類型": "Rucking", "重量": 11.0, "距離": 6.62, "爬升": 24.0, "時間": "0:58:58", "配速": 8.55, "備註": "長褲/長靴/前腰包+1不算重量"}], "summary": {"total_sessions": 25, "total_distance": 112.88, "total_elevation": 1304.0, "avg_weight": 18.0, "max_weight": 57.0, "min_weight": 2.0, "rucking_count": 15, "hiking_count": 5, "running_count": 4, "walking_count": 1}};
+
+        // Color mapping
+        const activityColors = {
+            'Rucking': 'var(--rucking)',
+            'Hiking': 'var(--hiking)',
+            'Running': 'var(--running)',
+            'Walking': 'var(--walking)'
+        };
+
+        // Populate summary stats
+        const statsGrid = document.getElementById('statsGrid');
+        const stats = [
+            { label: 'Total Sessions', value: data.summary.total_sessions, unit: '次' },
+            { label: 'Total Distance', value: data.summary.total_distance.toFixed(2), unit: 'km' },
+            { label: 'Total Elevation', value: data.summary.total_elevation.toFixed(0), unit: 'm' },
+            { label: 'Avg Weight', value: data.summary.avg_weight.toFixed(1), unit: 'kg' },
+            { label: 'Rucking', value: data.summary.rucking_count, unit: '次' },
+            { label: 'Hiking', value: data.summary.hiking_count, unit: '次' },
+            { label: 'Running', value: data.summary.running_count, unit: '次' },
+            { label: 'Walking', value: data.summary.walking_count, unit: '次' }
+        ];
+
+        stats.forEach(stat => {
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+            card.innerHTML = `
+                <div class="stat-label">${stat.label}</div>
+                <div class="stat-value">
+                    ${stat.value}
+                    <span class="stat-unit">${stat.unit}</span>
+                </div>
+            `;
+            statsGrid.appendChild(card);
+        });
+
+        // Weight bar chart with activity type colors
+        const weightChart = document.getElementById('weightChart');
+        const maxWeight = Math.max(...data.records.map(r => r.重量));
+        
+        data.records.forEach((record, idx) => {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            const height = (record.重量 / maxWeight) * 100;
+            bar.style.height = height + '%';
+            const color = activityColors[record.類型];
+            bar.style.background = `linear-gradient(to top, ${color}88, ${color})`;
+            bar.style.borderTopColor = color;
+            bar.innerHTML = `
+                <div class="bar-value" style="color: ${color};">${record.重量}kg</div>
+                <div class="bar-label">${record.日期.slice(5)}</div>
+            `;
+            weightChart.appendChild(bar);
+        });
+
+        // Distance line chart with activity type colors
+        const distanceChart = document.getElementById('distanceChart');
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 1000 300');
+        
+        const records = data.records.length;
+        const maxDistance = Math.max(...data.records.map(r => r.距離));
+        const minDistance = Math.min(...data.records.map(r => r.距離));
+        const distanceRange = maxDistance - minDistance;
+        
+        // Grid lines
+        for (let i = 0; i <= 5; i++) {
+            const y = 30 + (i * 50);
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '50');
+            line.setAttribute('y1', y);
+            line.setAttribute('x2', '950');
+            line.setAttribute('y2', y);
+            line.setAttribute('class', 'chart-grid');
+            svg.appendChild(line);
+            
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', '35');
+            label.setAttribute('y', y + 4);
+            label.setAttribute('class', 'chart-label');
+            label.setAttribute('text-anchor', 'end');
+            const value = maxDistance - (i * (maxDistance / 5));
+            label.textContent = value.toFixed(1) + 'km';
+            svg.appendChild(label);
+        }
+        
+        // Group by activity type and draw separate lines
+        const activityGroups = {};
+        data.records.forEach((record, index) => {
+            if (!activityGroups[record.類型]) {
+                activityGroups[record.類型] = [];
+            }
+            const x = 50 + (index * (900 / (records - 1)));
+            const normalizedDistance = distanceRange > 0 ? (record.距離 - minDistance) / distanceRange : 0.5;
+            const y = 280 - (normalizedDistance * 250);
+            activityGroups[record.類型].push({ x, y, record, index });
+        });
+
+        // Draw points for all activities
+        const points = [];
+        data.records.forEach((record, index) => {
+            const x = 50 + (index * (900 / (records - 1)));
+            const normalizedDistance = distanceRange > 0 ? (record.距離 - minDistance) / distanceRange : 0.5;
+            const y = 280 - (normalizedDistance * 250);
+            points.push({ x, y, record });
+            
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', '4');
+            circle.setAttribute('class', 'chart-point');
+            circle.setAttribute('fill', activityColors[record.類型]);
+            
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = `${record.日期} - ${record.類型}: ${record.距離}km`;
+            circle.appendChild(title);
+            
+            svg.appendChild(circle);
+        });
+        
+        distanceChart.appendChild(svg);
+
+        // Data table
+        const tableBody = document.getElementById('tableBody');
+        data.records.forEach(record => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${record.日期}</td>
+                <td><span class="activity-badge badge-${record.類型.toLowerCase()}">${record.類型}</span></td>
+                <td>${record.重量}</td>
+                <td>${record.距離}</td>
+                <td>${record.爬升}</td>
+                <td>${record.時間}</td>
+                <td>${record.配速}</td>
+                <td style="font-size: 0.8rem;">${record.備註}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
